@@ -7,7 +7,7 @@ import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import './../css/general.css';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-//import 'react-day-picker/lib/style.css';
+import './../css/form.css';
 
 export default class NewProject extends Component{
 
@@ -69,6 +69,7 @@ export default class NewProject extends Component{
                         Date de lancement:
                         <DayPickerInput onDayChange={day => console.log(day)} />
                     </label>
+                    <br />
                     <label>
                         Description:
                         <textarea name="description" value={this.state.description} onChange={this.handleChange} />
