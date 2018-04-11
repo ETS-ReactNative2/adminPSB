@@ -56,7 +56,7 @@ const convertUrlType = (param, type) => {
  * HTTP Get method for list objects *
  ********************************/
 
-app.get('/CATEGORIES/:NAME', function(req, res) {
+app.get(path+'/:NAME', function(req, res) {
   var condition = {}
   condition[partitionKeyName] = {
     ComparisonOperator: 'EQ'
@@ -86,11 +86,23 @@ app.get('/CATEGORIES/:NAME', function(req, res) {
   });
 });
 
+app.get(path, function(req, res) {
+  dynamodb.scan({
+    TableName: tableName,
+  }, (err, data) => {
+    if (err) {
+      res.json({error: 'Could not load items: ' + err});
+    } else {
+      res.json(data.Items);
+    }
+  });
+});
+
 /*****************************************
  * HTTP Get method for get single object *
  *****************************************/
 
-app.get('/CATEGORIES/object/:NAME', function(req, res) {
+app.get(path+'/object/:NAME', function(req, res) {
   var params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
@@ -127,6 +139,19 @@ app.get('/CATEGORIES/object/:NAME', function(req, res) {
     }
   });
 });
+
+app.get(path, function(req, res) {
+  
+    dynamodb.scan({
+      TableName: tableName,
+    }, (err, data) => {
+      if (err) {
+        res.json({error: 'Could not load items: ' + err});
+      } else {
+        res.json(data.Items);
+      }
+    });
+  });
 
 
 /************************************
@@ -179,7 +204,7 @@ app.post(path, function(req, res) {
 * HTTP remove method to delete object *
 ***************************************/
 
-app.delete('/CATEGORIES/object/:NAME', function(req, res) {
+app.delete(path+'/object/:NAME', function(req, res) {
   var params = {};
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;

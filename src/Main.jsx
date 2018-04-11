@@ -9,7 +9,8 @@ See the License for the specific language governing permissions and limitations 
 import React, { Component } from 'react';
 import Home from './Home';
 import Projects from './API/Projects'
-import Project from './API/Projet'
+import Project from './API/Project'
+import NewProject from './API/NewProject'
 import Login from './Auth/Login';
 import AppRoute from './index';
 import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom';
@@ -54,13 +55,13 @@ export default class Main extends Component {
                             </Navbar>
                             <div className="content">
                                 <h2>Interface admin pour PSB App</h2>
-                                <h4>Créer et modifier les projets et le guide du routard</h4>
                             </div>
                             <Switch>
                                 <Route exact path="/main" component={Home} />
                                 <Route exact path="/main/home" component={Home} />
-                                <Route exact path="/main/project/:id" component={Project} />
+                                <Route exact path="/main/projects/:id" component={Project} />
                                 <Route exact path="/main/projects" component={Projects} />
+                                <Route exact path="/main/newproject" component={NewProject} />
                             </Switch>
                         </div>
                     </BrowserRouter>)
