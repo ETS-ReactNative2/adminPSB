@@ -8,7 +8,7 @@ export default class Home extends Component{
 
     render() {
         return (
-            <div> Bienvenue sur l'interface administrateur pour l'appli PSB </div>
+            <div className="content-text"> Bienvenue sur l'interface administrateur pour l'appli PSB </div>
         );
     }
 }

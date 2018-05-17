@@ -66,7 +66,7 @@ export default class Login extends Component {
             <div>
                 { !logInStatus  && (
                     <div>
-                        <div className="fill-in" style={{justifyContent: 'center', flex: 1}}>
+                        <div className="fill-in" >
                             <div>
                                 <Row>
                                     <Form.Field>
@@ -85,9 +85,9 @@ export default class Login extends Component {
                                     { invalidCredentialsMessage && (<Label basic color='red' pointing='left'>{ invalidCredentialsMessage }</Label>) }
                                 </Row>
                             </div>
-                            <div>
+                            <div >
                                 <Link to="/forget"><a>Forgot Password?</a></Link>
-                                <Button style={{marginTop: 1 + 'em', width: 100, justifyContent: 'center'}} primary fluid onClick={this.signInCustomer}>Login</Button>
+                                <Button primary fluid onClick={this.signInCustomer}>Login</Button>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,5 @@
 .nav-bar {
-  background: #e47911;
+  background: green;
   margin-bottom: 20px;
 }
 
@@ -11,6 +11,8 @@
   margin: 10% 0 3% 20%;
   width: 45%;
   display: inline-block;
+  justify-content: 'center';
+  flex: 1;
 }
 
 .button-login {
@@ -58,4 +60,13 @@
 }
 .content-button {
   margin-bottom: 10px;
+}
+
+div .content-text{
+  margin-left: 20px;
+}
+
+Button .login-button{
+  margin-top: 10px;
+  width: 40px;
 }

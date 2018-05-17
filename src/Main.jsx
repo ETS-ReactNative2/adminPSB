@@ -8,9 +8,9 @@ See the License for the specific language governing permissions and limitations 
 
 import React, { Component } from 'react';
 import Home from './Home';
-import Projects from './API/Projects'
-import Project from './API/Project'
-import NewProject from './API/NewProject'
+import Projects from './API/Projects';
+import Project from './API/Project';
+import Categories from './API/Categories';
 import Login from './Auth/Login';
 import AppRoute from './index';
 import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom';
@@ -48,8 +48,9 @@ export default class Main extends Component {
                     !logOut && (
                     <BrowserRouter>
                         <div>
-                            <Navbar className='nav-bar' brand='WebApp' right>
+                            <Navbar className='nav-bar' right>
                                 <NavItem ><Link to="/main/home">Accueil</Link></NavItem>
+                                <NavItem ><Link to="/main/categories">Categories</Link></NavItem>
                                 <NavItem ><Link to="/main/projects">Projets</Link></NavItem>
                                 <NavItem onClick={this.signOut}>Logout</NavItem>
                             </Navbar>
@@ -61,7 +62,7 @@ export default class Main extends Component {
                                 <Route exact path="/main/home" component={Home} />
                                 <Route exact path="/main/projects/:id" component={Project} />
                                 <Route exact path="/main/projects" component={Projects} />
-                                <Route exact path="/main/newproject" component={NewProject} />
+                                <Route exact path="/main/categories" component={Categories} />
                             </Switch>
                         </div>
                     </BrowserRouter>)

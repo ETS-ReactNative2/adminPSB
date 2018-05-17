@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { Button, Table, Loader } from 'semantic-ui-react';
+import { Button, Table, Loader, Icon } from 'semantic-ui-react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import { Link} from 'react-router-dom';
 import awsmobile from './../aws-exports';
 import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import './../css/general.css';
+import NewProjectModal from './NewProjectModal';
 
 export default class Projects extends Component{
 
     state = {
         loading: false,
-        data: []
+        data: [],
+        isOpen: false
     }
 
     componentDidMount() {
@@ -36,9 +38,14 @@ export default class Projects extends Component{
             .catch ( err => console.log(err))
     }
 
-    addNewProject(){
-
-    }
+    toggleModal = () => {
+        if(this.state.isOpen){
+            this.fetchProjects();
+        }
+        this.setState({
+          isOpen: !this.state.isOpen
+        });
+      }
 
     render() {
         return (
@@ -51,11 +58,13 @@ export default class Projects extends Component{
                 transitionEnter={true}
                 transitionLeave={true}>
                 <div className="content">
-                    <h4>Les projets</h4>
                     {this.state.loading &&  <Loader active inline='centered' />}
                     {!this.state.loading && (
                         <div>
-                            <Button className="button"><Link to="newproject">Add new project</Link></Button>
+                            <Button circular  icon='add' className="button" onClick={this.toggleModal} />
+                            <NewProjectModal show={this.state.isOpen}
+                                onClose={this.toggleModal}>
+                            </NewProjectModal>
                             <Table>
                                 <Table.Header>
                                     <Table.Row>

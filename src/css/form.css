@@ -1,3 +1,62 @@
+
+Form input[type=text], select, textarea {
+  width: 100%; /* Full width */
+  padding: 12px; /* Some padding */  
+  border: 1px solid #ccc; /* Gray border */
+  border-radius: 4px; /* Rounded borders */
+  box-sizing: border-box; /* Make sure that padding and width stays in place */
+  margin-top: 6px; /* Add a top margin */
+  margin-bottom: 16px; /* Bottom margin */
+  resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
+  height: 20px;
+  font-size: 10px;
+}
+
+Form input[type=file]{
+  margin-top: 6px; /* Add a top margin */
+  margin-bottom: 16px; /* Bottom margin */
+}
+
+
+Form select{
+  display: inline-block;
+  
+}
+
+Form textarea{
+  height: 300px;
+}
+
+Form{
+  padding-left: 20px;
+  padding-right:20px;
+  width: 60%;
+  color: black;
+}
+
+Form button[type=submit] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+label {
+  display: inline-block;
+  width: 100%; /* Full width */
+  color: black;
+}
+
+Form span .required{
+  color: red;
+}
+
+Form button[type=submit]:hover {
+  background-color: #45a049;
+}
+
 /* DayPicker styles */
 
 .DayPicker {
@@ -197,6 +256,14 @@
 
 .DayPickerInput {
   display: inline-block;
+  padding: 0px;
+  font-size: 10px;
+  height: 2rem;
+  margin-bottom: 12px;
+}
+
+div .DayPickerInput input{
+  height: 20px;
 }
 
 .DayPickerInput-OverlayWrapper {

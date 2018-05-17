@@ -53,7 +53,7 @@ export default class Project extends Component {
 
     render() {
         return (
-            <div>
+            <div className="content-text">
                 <div>Projet {this.state.name}</div>
                 <div> {this.state.description} </div>
             </div>
