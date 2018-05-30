@@ -8,9 +8,7 @@ import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import './../css/form.css';
 import ReactDOM from 'react-dom';
-import {Editor, EditorState} from 'draft-js';
-
-import {Form, Select} from 'react-form';
+import {Editor, EditorState, RichUtils} from 'draft-js';
 
 export default class NewProjectModal extends Component{
 
@@ -18,20 +16,22 @@ export default class NewProjectModal extends Component{
         onClose: PropTypes.func.isRequired,
         show: PropTypes.bool,
         children: PropTypes.node,
-        id: PropTypes.object.isRequired,
     };
 
     constructor(props) {
         super(props);
         this.state = {
+            displayError: false,
             name: '',
             description: '',
+            startDate: '',
             category: '',
             categories: [],
             editorState: EditorState.createEmpty()
         };
         this.onChange = (editorState) => this.setState({editorState});
         this.handleChange = this.handleChange.bind(this);
+        this.handleFile = this.handleFile.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -39,27 +39,76 @@ export default class NewProjectModal extends Component{
         this.fetchAvailableCategories();
     }
 
+    handleSubmit(event) {
+        event.preventDefault();
+        if(!event.target.checkValidity()){
+            this.setState({displayError:true});
+            return;
+        }
+        this.setState({displayError:false});
+        let requestParams = {
+            headers: {'content-type': 'application/json'},
+            body : {
+                'NAME': this.state.name,
+                'DESCRIPTION': this.state.description,
+                'START_DATE': this.state.startDate,
+                'CATEGORY': this.state.category
+            }
+        }
+        API.post('PROJECTSCRUD','/PROJECTS', requestParams)
+        .then(data => {
+            console.log(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        this.props.onClose();
+    };
+
     fetchAvailableCategories(){
         API.get('CATEGORIESCRUD','/CATEGORIES')
         .then(data => {
             console.log(data);
-            this.setState({
-                categories: data
+            let newCategories = [];
+            data.map((item) => {
+                const c ={
+                    label: item.NAME,
+                    value: item.NAME
+                }
+                newCategories.push(c);
             });
+            this.setState({categories: newCategories});
         })
         .catch ( err => console.log(err))
     }
 
     handleChange(event) {
-        this.setState({[ target.name]: event.target.value});
+        const target = event.target;
+        if(target){
+            this.setState({
+            [ target.name]: target.value
+            });
+        }
     }
 
-    handleSubmit(event) {
-        const target = event.target;
+    handleFile(event){
+        const reader = new FileReader();
+        const file = event.target.files[0];
+    
+        reader.onload = (upload) => {
           this.setState({
-            [ target.name]: target.value
+            data_uri: upload.target.result,
+            filename: file.name,
+            filetype: file.type
           });
+        };
+    
+        reader.readAsDataURL(file);
     }
+
+    /*this.description = JSON.stringify({
+        content: convertToRaw(content)
+    });*/
 
     render() {
         if(!this.props.show) {
@@ -80,65 +129,66 @@ export default class NewProjectModal extends Component{
         const modalStyle = {
             backgroundColor: '#fff',
             borderRadius: 5,
-            maxWidth: 600,
-            minHeight: 150,
+            maxWidth: '80%',
             margin: '0 auto',
-            padding: 20
+            padding: 20,
+            overflowY: 'auto'
         };
 
-        const closeButtonStyle = {
-            marginTop : '15px',
-            marginRight: '15px'
-        };
+        const editorStyle ={
+            borderStyle: 'solid',
+            borderRadius: '4px',
+            borderWidth: '1px',
+            borderColor: '#ccc',
+            width: '100%',
+            minHeight: 200
+        }
 
-        const categories = [
-            {
-                label: 'category1',
-                value: 'category1',
-            },
-            {
-                label: 'category2',
-                value: 'category2',
-            },
-            {
-                label: "category3",
-                value: 'category3',
-            },
-        ]
+        const {displayErrors} = this.state;
 
         return (
         <div style={backdropStyle}>
             <div style={modalStyle}>
-                <div style ={{marginBottom:15}}> Création d'un nouveau projet </div>
-                <Form> 
-                    {formApi => (
-                    <form onSubmit={formApi.submitForm} if="form1" className="project">
-                        <label htmlFor="name">Nom <span className="required">*</span></label>
-                        <input id ="name" rows="1" field="name" type="text" value={this.state.name} onChange={this.handleChange} />
+                <div>
+                    <img src={require('../Images/closeIcon2.png')} 
+                        onClick={() => {this.props.onClose();}}
+                        style={{float:"right", cursor: 'pointer',}}
+                        width="16" 
+                        height="16" 
+                    />
+                </div>
+                <div  style ={{marginBottom:15, fontWeight: "bold"}}> Création d'un nouveau projet </div>
+                <div className="scroll">
+                    <form onSubmit={this.handleSubmit} 
+                    className={displayErrors ? 'displayErrors' : ''} 
+                    noValidate> 
+                        <label>Nom <span className='required'>*</span></label>
+                        <input name="name" rows="1" type="text" value={this.state.name} onChange={this.handleChange} required/>
                         <br />
-                        <label htlmFor="category">Categorie</label>
-                        <Select field="category" id="category" options={categories}/>
+                        <label>Catégorie</label>
+                        <select name="category" value={this.state.category} onChange={this.handleChange}>
+                            {this.state.categories.map(item => (
+                                <option key={item.value} value={item.value}>
+                                    {item.label}
+                                </option>
+                            ))}
+                        </select>
                         <br/>
-                        <label htmlFor="cover" >Image de présentation<span className="required">*</span></label>
-                        <input id="cover" field="cover" type="file"/>
+                        <label>Image de présentation<span className="required">*</span></label>
+                        <input name="cover" type="file" 
+                            onChange={this.handleFile}/>
                         <br />
-                        <label htmlFor="startDate">Date de lancement<span class="required">*</span></label>
-                        <DayPickerInput id="startDate" field="startDate"  />
+                        <label>Date de lancement<span className="required">*</span></label>
+                        <DayPickerInput name="startDate" field="startDate" value={this.state.startDate} onChange={this.handleChange} />
                         <br />
-                        <label htmlFor="description">Description<span className="required">*</span></label>
-                        <Editor editorState={this.state.editorState} onChange={this.onChange} />
-                    </form>
-                    )}
-                </Form>
-                <div className="footer">
-                    <Button.Group>
-                        <Button positive style={closeButtonStyle} onClick={this.closeModal}>
+                        <label>Description<span className="required">*</span></label>
+                        <div style={editorStyle}>
+                            <Editor name="description" editorState={this.state.editorState} value={this.state.description} onChange={this.handleChange} />
+                        </div>
+                        <button className='saveData' >
                             Créer
-                        </Button>
-                        <Button style={closeButtonStyle} onClick={this.props.onClose}>
-                            Annuler
-                        </Button>
-                    </Button.Group>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

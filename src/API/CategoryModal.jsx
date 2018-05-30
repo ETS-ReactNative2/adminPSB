@@ -17,12 +17,12 @@ class CategoryModal extends React.Component {
             name: "",
             date: new Date()
         };
-        this.closeModal = this.closeModal.bind(this);
-
+        this.handleSubmit = this.handleSubmit.bind(this);
       }
 
 
-    closeModal(){
+      handleSubmit(event) {
+        event.preventDefault();
         let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {
@@ -68,29 +68,26 @@ class CategoryModal extends React.Component {
             padding: 20
         };
 
-        const closeButtonStyle = {
-            marginTop : '15px',
-            marginRight: '15px'
-        };
-
         return (
         <div style={backdropStyle}>
             <div style={modalStyle}>
-                {this.props.children}
-                <div style ={{marginBottom:15}}> Création d'une nouvelle catégorie </div>
-                <label> Nom : 
-                    <input style={{height: '2rem', width: 200, marginLeft: 20}} onChange={this.handleChange.bind(this)} type="text" name="categoryName" value={this.state.name} />
-                </label>
-                <div className="footer">
-                    <Button.Group>
-                        <Button positive style={closeButtonStyle} onClick={this.closeModal}>
-                            Créer
-                        </Button>
-                        <Button style={closeButtonStyle} onClick={this.props.onClose}>
-                            Annuler
-                        </Button>
-                    </Button.Group>
+                <div>
+                    <img src={require('../Images/closeIcon2.png')} 
+                        onClick={() => {this.props.onClose();}}
+                        style={{float:"right"}}
+                        width="16" 
+                        height="16" 
+                    />
                 </div>
+                <div style ={{marginBottom:15, fontWeight: "bold"}}> Création d'une nouvelle catégorie </div>
+                <form onSubmit={this.handleSubmit}> 
+                    <label> Nom : 
+                        <input style={{height: '2rem', width: 200, marginLeft: 20}} onChange={this.handleChange.bind(this)} type="text" name="categoryName" value={this.state.name} />
+                    </label>
+                    <button className='saveData' >
+                        Créer
+                    </button>
+                </form>
             </div>
         </div>
         );
