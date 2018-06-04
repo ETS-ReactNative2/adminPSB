@@ -8,7 +8,9 @@ import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import './../css/form.css';
 import ReactDOM from 'react-dom';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Editor} from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { EditorState} from 'draft-js';
 
 export default class NewProjectModal extends Component{
 
@@ -27,9 +29,9 @@ export default class NewProjectModal extends Component{
             startDate: '',
             category: '',
             categories: [],
-            editorState: EditorState.createEmpty()
+            editorState: EditorState.createEmpty(),
         };
-        this.onChange = (editorState) => this.setState({editorState});
+        this.onEditorStateChange = this.onEditorStateChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleFile = this.handleFile.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -91,6 +93,12 @@ export default class NewProjectModal extends Component{
         }
     }
 
+    onEditorStateChange(editorState) {
+        this.setState({
+          editorState,
+        });
+      };
+
     handleFile(event){
         const reader = new FileReader();
         const file = event.target.files[0];
@@ -145,6 +153,7 @@ export default class NewProjectModal extends Component{
         }
 
         const {displayErrors} = this.state;
+        const {editorState} = this.state;
 
         return (
         <div style={backdropStyle}>
@@ -181,9 +190,14 @@ export default class NewProjectModal extends Component{
                         <label>Date de lancement<span className="required">*</span></label>
                         <DayPickerInput name="startDate" field="startDate" value={this.state.startDate} onChange={this.handleChange} />
                         <br />
-                        <label>Description<span className="required">*</span></label>
                         <div style={editorStyle}>
-                            <Editor name="description" editorState={this.state.editorState} value={this.state.description} onChange={this.handleChange} />
+                            <Editor
+                                editorState={editorState}
+                                toolbarClassName="toolbarClassName"
+                                wrapperClassName="wrapperClassName"
+                                editorClassName="editorClassName"
+                                onEditorStateChange={this.onEditorStateChange}
+                            />
                         </div>
                         <button className='saveData' >
                             Créer
