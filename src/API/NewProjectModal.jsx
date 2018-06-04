@@ -7,10 +7,12 @@ import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import './../css/form.css';
+import './../css/editor.css';
 import ReactDOM from 'react-dom';
 import {Editor} from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState} from 'draft-js';
+import { EditorState, convertToRaw} from 'draft-js';
 
 export default class NewProjectModal extends Component{
 
@@ -51,8 +53,9 @@ export default class NewProjectModal extends Component{
         let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {
+                'ID': Date.now(),
                 'NAME': this.state.name,
-                'DESCRIPTION': this.state.description,
+                'DESCRIPTION': draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
                 'START_DATE': this.state.startDate,
                 'CATEGORY': this.state.category
             }
@@ -70,8 +73,7 @@ export default class NewProjectModal extends Component{
     fetchAvailableCategories(){
         API.get('CATEGORIESCRUD','/CATEGORIES')
         .then(data => {
-            console.log(data);
-            let newCategories = [];
+            let newCategories = [{label: '',value: ''}];
             data.map((item) => {
                 const c ={
                     label: item.NAME,
@@ -138,6 +140,7 @@ export default class NewProjectModal extends Component{
             backgroundColor: '#fff',
             borderRadius: 5,
             maxWidth: '80%',
+            maxHeight: '100%',
             margin: '0 auto',
             padding: 20,
             overflowY: 'auto'
@@ -188,14 +191,14 @@ export default class NewProjectModal extends Component{
                             onChange={this.handleFile}/>
                         <br />
                         <label>Date de lancement<span className="required">*</span></label>
-                        <DayPickerInput name="startDate" field="startDate" value={this.state.startDate} onChange={this.handleChange} />
+                        <input name="startDate" row="1" type="date" value={this.state.startDate} onChange={this.handleChange} />
                         <br />
                         <div style={editorStyle}>
                             <Editor
                                 editorState={editorState}
                                 toolbarClassName="toolbarClassName"
                                 wrapperClassName="wrapperClassName"
-                                editorClassName="editorClassName"
+                                editorClassName="editorStyle"
                                 onEditorStateChange={this.onEditorStateChange}
                             />
                         </div>

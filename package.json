@@ -33,7 +33,6 @@
     "webpack-dev-server": "^2.11.2"
   },
   "dependencies": {
-    "Dante2": "^0.4.4",
     "amazon-cognito-identity-js": "^1.31.0",
     "autoprefixer": "^8.5.2",
     "aws-amplify": "^0.1.36",
@@ -45,8 +44,10 @@
     "babel-polyfill": "^6.26.0",
     "body-parser": "^1.18.3",
     "draft-js": "^0.10.5",
+    "draftjs-to-html": "^0.8.4",
     "express": "^4.16.3",
     "extract-text-webpack-plugin": "^3.0.2",
+    "html-to-draftjs": "^1.4.0",
     "node-uuid": "^1.4.8",
     "path": "^0.12.7",
     "postcss": "^6.0.22",
@@ -55,7 +56,6 @@
     "querystring-browser": "^1.0.4",
     "react": "^16.0.0",
     "react-addons-shallow-compare": "^15.6.2",
-    "react-day-picker": "^7.1.9",
     "react-dom": "^16.3.2",
     "react-draft-wysiwyg": "^1.12.13",
     "react-form": "^3.5.5",
