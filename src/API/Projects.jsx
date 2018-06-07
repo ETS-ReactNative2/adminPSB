@@ -7,13 +7,21 @@ import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import './../css/general.css';
 import NewProjectModal from './NewProjectModal';
+import Modal from './Modal';
+import ExistingProjectModal from './ExistingProjectModal';
 
 export default class Projects extends Component{
 
-    state = {
-        loading: false,
-        data: [],
-        isOpen: false
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false,
+            data: [],
+            newProjectOpen: false,
+            existingProjectOpen: false,
+            selectedProjectId: 0
+        }
+        this.displayExistingProject = this.displayExistingProject.bind(this);
     }
 
     componentDidMount() {
@@ -38,16 +46,38 @@ export default class Projects extends Component{
             .catch ( err => console.log(err))
     }
 
-    toggleModal = () => {
-        if(this.state.isOpen){
+    toggleNewProjectModal = () => {
+        if(this.state.newProjectOpen){
             this.fetchProjects();
         }
         this.setState({
-          isOpen: !this.state.isOpen
+            newProjectOpen: !this.state.newProjectOpen
         });
-      }
+    }
+
+    toggleExistingProjectModal = () => {
+        if(this.state.existingProjectOpen){
+            this.fetchProjects();
+        }
+        this.setState({
+            existingProjectOpen: !this.state.existingProjectOpen
+        });
+    }
+
+    displayExistingProject(id){
+        this.setState({
+            existingProjectOpen: true,
+            selectedProjectId: id
+        });
+    }
 
     render() {
+
+        const projectStyle = {
+            cursor: "pointer",
+            color: "blue",
+            textDecoration: "underline"
+        }
         return (
             <CSSTransitionGroup
                 transitionName="sample-app"
@@ -61,10 +91,19 @@ export default class Projects extends Component{
                     {this.state.loading &&  <Loader active inline='centered' />}
                     {!this.state.loading && (
                         <div>
-                            <Button circular  icon='add' className="button" onClick={this.toggleModal} />
-                            <NewProjectModal show={this.state.isOpen}
-                                onClose={this.toggleModal}>
-                            </NewProjectModal>
+                            <Button circular  icon='add' className="button" onClick={this.toggleNewProjectModal} />
+                            <Modal show={this.state.newProjectOpen}
+                                onClose={this.toggleNewProjectModal}
+                                title="Création d'un nouveau projet">
+                                <NewProjectModal />
+                            </Modal>
+                            <Modal show={this.state.existingProjectOpen}
+                                onClose={this.toggleExistingProjectModal}
+                                title="Projet">
+                                <ExistingProjectModal 
+                                    selectedProjectId={this.state.selectedProjectId}
+                                />
+                            </Modal>
                             <Table>
                                 <Table.Header>
                                     <Table.Row>
@@ -79,7 +118,7 @@ export default class Projects extends Component{
                                 <Table.Body>
                                     {this.state.data.map((data) =>
                                         <Table.Row key={data.ID}>
-                                            <Table.Cell><Link to={`projects/${data.ID}`}>{data.NAME}</Link></Table.Cell>
+                                            <Table.Cell><span style={projectStyle} onClick={() => this.displayExistingProject(data.ID)}>{data.NAME}</span></Table.Cell>
                                             <Table.Cell>{data.CATEGORY}</Table.Cell>
                                             <Table.Cell>{data.START_DATE}</Table.Cell>
                                             <Table.Cell>{data.END_DATE}</Table.Cell>

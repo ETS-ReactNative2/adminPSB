@@ -9,7 +9,6 @@ See the License for the specific language governing permissions and limitations 
 import React, { Component } from 'react';
 import Home from './Home';
 import Projects from './API/Projects';
-import Project from './API/Project';
 import Categories from './API/Categories';
 import Login from './Auth/Login';
 import AppRoute from './index';
@@ -60,7 +59,6 @@ export default class Main extends Component {
                             <Switch>
                                 <Route exact path="/main" component={Home} />
                                 <Route exact path="/main/home" component={Home} />
-                                <Route exact path="/main/projects/:id" component={Project} />
                                 <Route exact path="/main/projects" component={Projects} />
                                 <Route exact path="/main/categories" component={Categories} />
                             </Switch>

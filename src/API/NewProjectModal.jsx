@@ -5,7 +5,6 @@ import { Link} from 'react-router-dom';
 import awsmobile from './../aws-exports';
 import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import './../css/form.css';
 import './../css/editor.css';
 import ReactDOM from 'react-dom';
@@ -16,11 +15,6 @@ import { EditorState, convertToRaw} from 'draft-js';
 
 export default class NewProjectModal extends Component{
 
-    static propTypes = {
-        onClose: PropTypes.func.isRequired,
-        show: PropTypes.bool,
-        children: PropTypes.node,
-    };
 
     constructor(props) {
         super(props);
@@ -116,35 +110,7 @@ export default class NewProjectModal extends Component{
         reader.readAsDataURL(file);
     }
 
-    /*this.description = JSON.stringify({
-        content: convertToRaw(content)
-    });*/
-
     render() {
-        if(!this.props.show) {
-            return null;
-        }
-    
-        // The gray background
-        const backdropStyle = {
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            width:'100%',
-            height: '100%',
-            padding: 50,
-        };
-
-        const modalStyle = {
-            backgroundColor: '#fff',
-            borderRadius: 5,
-            maxWidth: '80%',
-            maxHeight: '100%',
-            margin: '0 auto',
-            padding: 20,
-            overflowY: 'auto'
-        };
 
         const editorStyle ={
             borderStyle: 'solid',
@@ -159,56 +125,55 @@ export default class NewProjectModal extends Component{
         const {editorState} = this.state;
 
         return (
-        <div style={backdropStyle}>
-            <div style={modalStyle}>
-                <div>
-                    <img src={require('../Images/closeIcon2.png')} 
-                        onClick={() => {this.props.onClose();}}
-                        style={{float:"right", cursor: 'pointer',}}
-                        width="16" 
-                        height="16" 
+            <form onSubmit={this.handleSubmit} 
+            className={displayErrors ? 'displayErrors' : ''} 
+            noValidate> 
+                <label>Nom <span className='required'>*</span></label>
+                <input name="name" rows="1" type="text" value={this.state.name} onChange={this.handleChange} required/>
+                <br />
+                <label>Catégorie</label>
+                <select name="category" value={this.state.category} onChange={this.handleChange}>
+                    {this.state.categories.map(item => (
+                        <option key={item.value} value={item.value}>
+                            {item.label}
+                        </option>
+                    ))}
+                </select>
+                <br/>
+                <label>Image de présentation<span className="required">*</span></label>
+                <input name="cover" type="file" 
+                    onChange={this.handleFile}/>
+                <br />
+                <label>Date de lancement<span className="required">*</span></label>
+                <input name="startDate" row="1" type="date" value={this.state.startDate} onChange={this.handleChange} />
+                <br />
+                <div style={editorStyle}>
+                    <Editor
+                        editorState={editorState}
+                        toolbarClassName="toolbarClassName"
+                        wrapperClassName="wrapperClassName"
+                        editorClassName="editorStyle"
+                        onEditorStateChange={this.onEditorStateChange}
+                        toolbar={{
+                            uploadCallback: uploadImageCallBack,
+                            alt: { present: true, mandatory: false },
+                        }}
                     />
                 </div>
-                <div  style ={{marginBottom:15, fontWeight: "bold"}}> Création d'un nouveau projet </div>
-                <div className="scroll">
-                    <form onSubmit={this.handleSubmit} 
-                    className={displayErrors ? 'displayErrors' : ''} 
-                    noValidate> 
-                        <label>Nom <span className='required'>*</span></label>
-                        <input name="name" rows="1" type="text" value={this.state.name} onChange={this.handleChange} required/>
-                        <br />
-                        <label>Catégorie</label>
-                        <select name="category" value={this.state.category} onChange={this.handleChange}>
-                            {this.state.categories.map(item => (
-                                <option key={item.value} value={item.value}>
-                                    {item.label}
-                                </option>
-                            ))}
-                        </select>
-                        <br/>
-                        <label>Image de présentation<span className="required">*</span></label>
-                        <input name="cover" type="file" 
-                            onChange={this.handleFile}/>
-                        <br />
-                        <label>Date de lancement<span className="required">*</span></label>
-                        <input name="startDate" row="1" type="date" value={this.state.startDate} onChange={this.handleChange} />
-                        <br />
-                        <div style={editorStyle}>
-                            <Editor
-                                editorState={editorState}
-                                toolbarClassName="toolbarClassName"
-                                wrapperClassName="wrapperClassName"
-                                editorClassName="editorStyle"
-                                onEditorStateChange={this.onEditorStateChange}
-                            />
-                        </div>
-                        <button className='saveData' >
-                            Créer
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
+                <button className='saveData' >
+                    Créer
+                </button>
+            </form>
         );
     }
 }
+
+function uploadImageCallBack(file) {
+    return new Promise(
+      (resolve, reject) => {
+        const reader = new FileReader(); // eslint-disable-line no-undef
+        reader.onload = e => resolve({ data: { link: e.target.result } });
+        reader.onerror = e => reject(e);
+        reader.readAsDataURL(file);
+      });
+  }
