@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {API} from 'aws-amplify';
 import { Button} from 'semantic-ui-react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {addCategory} from '../actions/index.js'
 
 class CategoryModal extends React.Component {
 
@@ -23,15 +26,17 @@ class CategoryModal extends React.Component {
 
       handleSubmit(event) {
         event.preventDefault();
+        const categoryName = this.state.name;
         let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {
-                'NAME': this.state.name
+                'NAME': categoryName
             }
         }
         API.post('CATEGORIESCRUD','/CATEGORIES', requestParams)
         .then(data => {
             console.log(data);
+            this.props.addCategory(categoryName);
         })
         .catch((error) => {
             console.log(error);
@@ -74,7 +79,7 @@ class CategoryModal extends React.Component {
                 <div>
                     <img src={require('../Images/closeIcon2.png')} 
                         onClick={() => {this.props.onClose();}}
-                        style={{float:"right"}}
+                        style={{float:"right", cursor: "pointer"}}
                         width="16" 
                         height="16" 
                     />
@@ -82,7 +87,7 @@ class CategoryModal extends React.Component {
                 <div style ={{marginBottom:15, fontWeight: "bold"}}> Création d'une nouvelle catégorie </div>
                 <form onSubmit={this.handleSubmit}> 
                     <label> Nom : 
-                        <input style={{height: '2rem', width: 200, marginLeft: 20}} onChange={this.handleChange.bind(this)} type="text" name="categoryName" value={this.state.name} />
+                        <input autoFocus style={{height: '2rem', width: 200, marginLeft: 20}} onChange={this.handleChange.bind(this)} type="text" name="categoryName" value={this.state.name} />
                     </label>
                     <button className='saveData' >
                         Créer
@@ -93,6 +98,11 @@ class CategoryModal extends React.Component {
         );
     }
 }
-  
-  export default CategoryModal;
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({addCategory}, dispatch);
+}
+
+export default connect(null,mapDispatchToProps)(CategoryModal);
+
   

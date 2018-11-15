@@ -36,22 +36,23 @@ export default class Modal extends Component{
             maxWidth: '80%',
             maxHeight: '100%',
             margin: '0 auto',
-            padding: 20,
             overflowY: 'auto'
         };
     return (
         <div style={backdropStyle}>
             <div style={modalStyle}>
-                <div>
-                    <img src={require('../Images/closeIcon2.png')} 
-                        onClick={() => {this.props.onClose();}}
-                        style={{float:"right", cursor: 'pointer',}}
-                        width="16" 
-                        height="16" 
-                    />
+                <div style={{backgroundColor: "#D3D3D3", height: 60, padding: "20px"}}>
+                    <div>
+                        <img src={require('../Images/closeIcon2.png')} 
+                            onClick={() => {this.props.onClose();}}
+                            style={{float:"right", cursor: 'pointer',}}
+                            width="16" 
+                            height="16" 
+                        />
+                    </div>
+                    <div  style ={{marginBottom:15, fontWeight: "bold"}}> {this.props.title} </div>
                 </div>
-                <div  style ={{marginBottom:15, fontWeight: "bold"}}> {this.props.title} </div>
-                <div className="scroll">
+                <div className="scroll" style={{margin: "20px"}}>
                     {this.props.children}
                 </div>
             </div>

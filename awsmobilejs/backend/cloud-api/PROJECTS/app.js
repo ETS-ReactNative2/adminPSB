@@ -192,8 +192,9 @@ app.post(path, function(req, res) {
 * HTTP remove method to delete object *
 ***************************************/
 
-app.delete(path+'/object/:ID/:CATEGORY', function(req, res) {
+app.delete(path+'/object/:ID', function(req, res) {
   var params = {};
+  console.log("Start deleting ");
   if (userIdPresent && req.apiGateway) {
     params[partitionKeyName] = req.apiGateway.event.requestContext.identity.cognitoIdentityId || UNAUTH;
   } else {
@@ -201,6 +202,7 @@ app.delete(path+'/object/:ID/:CATEGORY', function(req, res) {
      try {
       params[partitionKeyName] = convertUrlType(req.params[partitionKeyName], partitionKeyType);
     } catch(err) {
+      console.log("Exception : "+err+" (Wrong column type 1)");
       res.json({error: 'Wrong column type ' + err});
     }
   }
@@ -208,6 +210,7 @@ app.delete(path+'/object/:ID/:CATEGORY', function(req, res) {
     try {
       params[sortKeyName] = convertUrlType(req.params[sortKeyName], sortKeyType);
     } catch(err) {
+      console.log("Exception : "+err+" (Wrong column type 2)");
       res.json({error: 'Wrong column type ' + err});
     }
   }
@@ -216,10 +219,13 @@ app.delete(path+'/object/:ID/:CATEGORY', function(req, res) {
     TableName: tableName,
     Key: params
   }
+  console.log(`removeItemParams: ${JSON.stringify(removeItemParams)} `)
   dynamodb.delete(removeItemParams, (err, data)=> {
     if(err) {
+      console.log("Error delete : "+err);
       res.json({error: err, url: req.url});
     } else {
+      console.log(`Success delete ${JSON.stringify({url: req.url, data: data})}`);
       res.json({url: req.url, data: data});
     }
   });

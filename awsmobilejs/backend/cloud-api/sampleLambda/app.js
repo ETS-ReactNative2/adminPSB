@@ -21,9 +21,6 @@ app.use(function(req, res, next) {
   next()
 });
 
-
-AWS.config.update({ region: process.env.REGION })
-
 /**********************
  * Example get method *
  **********************/

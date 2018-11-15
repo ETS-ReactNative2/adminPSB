@@ -18,7 +18,10 @@ import Forget from './Auth/Forget';
 import awsmobile from './aws-exports';
 import Amplify,{Auth} from 'aws-amplify';
 import './css/general.css';
-
+import {Provider} from 'react-redux';
+import {createStore} from 'redux';
+import rootReducer from './reducers/index.js';
+ 
 Amplify.configure(awsmobile);
 
 require('file-loader?name=[name].[ext]!./index.html');
@@ -36,6 +39,8 @@ const PrivateRoute = ({ component: Component, authStatus, ...rest}) => (
         ? ( <Redirect to="/login" /> ) : ( <Component {...props} /> )
     } />
 )
+
+const store = createStore(rootReducer);
 
 export default class AppRoute extends Component {
 
@@ -101,4 +106,8 @@ export default class AppRoute extends Component {
     }
 }
 
-ReactDOM.render(<AppRoute />, document.getElementById('root'));
+ReactDOM.render(
+<Provider store ={store}>
+    <AppRoute /> 
+</Provider>, 
+document.getElementById('root'));

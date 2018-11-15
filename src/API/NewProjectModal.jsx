@@ -1,62 +1,67 @@
 import React, { Component } from 'react';
-import { Button, Table, Loader } from 'semantic-ui-react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import { Link} from 'react-router-dom';
-import awsmobile from './../aws-exports';
-import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import './../css/form.css';
 import './../css/editor.css';
 import ReactDOM from 'react-dom';
 import {Editor} from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState, convertToRaw} from 'draft-js';
+import axios from 'axios';
+import {API} from 'aws-amplify';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {addProject} from '../actions/index.js';
+import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
-export default class NewProjectModal extends Component{
+const PREFIX = 'https://s3-eu-west-2.amazonaws.com/psb-users/';
+
+class NewProjectModal extends Component{
 
 
     constructor(props) {
         super(props);
         this.state = {
-            displayError: false,
             name: '',
+            isLoading: false,
             description: '',
             startDate: '',
-            category: '',
-            categories: [],
+            location: '',
+            category: this.props.categories[0].name,
+            coverImage: '',
             editorState: EditorState.createEmpty(),
         };
-        this.onEditorStateChange = this.onEditorStateChange.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.handleFile = this.handleFile.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount() {
-        this.fetchAvailableCategories();
+    static propTypes = {
+        onClose: PropTypes.func.isRequired
     }
 
-    handleSubmit(event) {
+    handleSubmit = (event) => {
         event.preventDefault();
-        if(!event.target.checkValidity()){
-            this.setState({displayError:true});
-            return;
-        }
-        this.setState({displayError:false});
+        const id= Date.now();
+        const name = this.state.name;
+        const description = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
+        const startDate = this.state.startDate;
+        const coverImage = this.state.coverImage;
+        const category = this.state.category;
+        const location = this.state.location;
         let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {
-                'ID': Date.now(),
-                'NAME': this.state.name,
-                'DESCRIPTION': draftToHtml(convertToRaw(this.state.editorState.getCurrentContent())),
-                'START_DATE': this.state.startDate,
-                'CATEGORY': this.state.category
+                'ID': id,
+                'NAME': name,
+                'DESCRIPTION': description,
+                'START_DATE': startDate,
+                'CATEGORY': category,
+                'COVER_IMG': coverImage,
+                'LOCATION' : location
             }
         }
         API.post('PROJECTSCRUD','/PROJECTS', requestParams)
         .then(data => {
             console.log(data);
+            this.props.addProject(id,name,description,startDate, coverImage, category, null, location);
         })
         .catch((error) => {
             console.log(error);
@@ -64,23 +69,7 @@ export default class NewProjectModal extends Component{
         this.props.onClose();
     };
 
-    fetchAvailableCategories(){
-        API.get('CATEGORIESCRUD','/CATEGORIES')
-        .then(data => {
-            let newCategories = [{label: '',value: ''}];
-            data.map((item) => {
-                const c ={
-                    label: item.NAME,
-                    value: item.NAME
-                }
-                newCategories.push(c);
-            });
-            this.setState({categories: newCategories});
-        })
-        .catch ( err => console.log(err))
-    }
-
-    handleChange(event) {
+    handleChange = (event) => {
         const target = event.target;
         if(target){
             this.setState({
@@ -89,25 +78,87 @@ export default class NewProjectModal extends Component{
         }
     }
 
-    onEditorStateChange(editorState) {
+    onEditorStateChange = (editorState) => {
         this.setState({
           editorState,
         });
-      };
+    };
 
-    handleFile(event){
-        const reader = new FileReader();
+    validate(name, startDate, category, location){
+        return {
+            name: name.length ===0,
+            startDate: startDate.length ===0,
+            category: category.length ===0,
+            location: location.length ===0
+        }
+    }
+
+    handleFile= (event) => {
         const file = event.target.files[0];
-    
-        reader.onload = (upload) => {
-          this.setState({
-            data_uri: upload.target.result,
-            filename: file.name,
-            filetype: file.type
-          });
+        let currentComponent = this;
+        let requestParams = {
+            headers: {'content-type': 'application/json'},
+            body: {
+                'filename': file.name,
+                'filetype': file.type
+            }
         };
+        API.post('UPLOAD','/getSignedUrl', requestParams)
+        .then(function (result) {
+            var signedUrl = result.data.signedUrl;
+            
+            var options = {
+                headers: {
+                    'Content-Type': file.type
+                }
+            };
     
-        reader.readAsDataURL(file);
+            return axios.put(signedUrl, file, options);
+        })
+        .then(function (result) {
+            console.log(result);
+            if(result.status == 200){
+                currentComponent.setState({
+                    coverImage: PREFIX+file.name,
+                });
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+    }
+
+    uploadImageCallBack(file) {
+        let requestParams = {
+            headers: {'content-type': 'application/json'},
+            body: {
+                'filename': file.name,
+                'filetype': file.type
+            }
+        };
+        return API.post('UPLOAD','/getSignedUrl', requestParams)
+        .then(function (result) {
+            var signedUrl = result.data.signedUrl;
+            
+            var options = {
+                headers: {
+                    'Content-Type': file.type
+                }
+            };
+    
+            return axios.put(signedUrl, file, options);
+        })
+        .then(response => {
+            return {
+                data: {
+                    link: PREFIX+file.name
+                }
+            }
+        })
+        .catch(function (err) {
+            console.log(err);
+            throw err;
+        });
     }
 
     render() {
@@ -121,21 +172,25 @@ export default class NewProjectModal extends Component{
             minHeight: 200
         }
 
-        const {displayErrors} = this.state;
+        const errorStyle ={
+            borderColor: 'red',
+        }
+
         const {editorState} = this.state;
+        const {name, description, startDate, category} = this.state;
+        const errors = this.validate(name, startDate, category, location);
+        const isEnabled = !Object.keys(errors).some(x => errors[x]);
 
         return (
-            <form onSubmit={this.handleSubmit} 
-            className={displayErrors ? 'displayErrors' : ''} 
-            noValidate> 
+            <form onSubmit={this.handleSubmit}> 
                 <label>Nom <span className='required'>*</span></label>
-                <input name="name" rows="1" type="text" value={this.state.name} onChange={this.handleChange} required/>
+                <input autoFocus name="name" rows="1" type="text" className={errors.name?"error":""} value={this.state.name} onChange={this.handleChange}/>
                 <br />
                 <label>Catégorie</label>
-                <select name="category" value={this.state.category} onChange={this.handleChange}>
-                    {this.state.categories.map(item => (
-                        <option key={item.value} value={item.value}>
-                            {item.label}
+                <select name="category" className={errors.category?"error":""} value={this.state.category} onChange={this.handleChange}>
+                    {this.props.categories.map(item => (
+                        <option key={item.name} value={item.name}>
+                            {item.name}
                         </option>
                     ))}
                 </select>
@@ -143,11 +198,20 @@ export default class NewProjectModal extends Component{
                 <label>Image de présentation<span className="required">*</span></label>
                 <input name="cover" type="file" 
                     onChange={this.handleFile}/>
+                {this.state.coverImage!=''?
+                    <div >
+                        <img className="imgPreview" src={this.state.coverImage}/>
+                    </div>
+                    : null
+                }
                 <br />
                 <label>Date de lancement<span className="required">*</span></label>
-                <input name="startDate" row="1" type="date" value={this.state.startDate} onChange={this.handleChange} />
+                <input name="startDate" style={{width: 150}} row="1" className={errors.startDate?"error":""} type="date" value={this.state.startDate} onChange={this.handleChange} />
                 <br />
-                <div style={editorStyle}>
+                <label>Lieu<span className="required">*</span></label>
+                <input name="location" row="1" className={errors.location?"error":""} type="text" value={this.state.location} onChange={this.handleChange} />
+                <br />
+                <div style={editorStyle} className={errors.name?"error":""}>
                     <Editor
                         editorState={editorState}
                         toolbarClassName="toolbarClassName"
@@ -155,12 +219,15 @@ export default class NewProjectModal extends Component{
                         editorClassName="editorStyle"
                         onEditorStateChange={this.onEditorStateChange}
                         toolbar={{
-                            uploadCallback: uploadImageCallBack,
-                            alt: { present: true, mandatory: false },
+                            image: {
+                                uploadCallback: this.uploadImageCallBack,
+                                alt: { present: true, mandatory: false },
+                                previewImage: true,
+                            },
                         }}
                     />
                 </div>
-                <button className='saveData' >
+                <button className='saveData' disabled={!isEnabled}>
                     Créer
                 </button>
             </form>
@@ -168,12 +235,14 @@ export default class NewProjectModal extends Component{
     }
 }
 
-function uploadImageCallBack(file) {
-    return new Promise(
-      (resolve, reject) => {
-        const reader = new FileReader(); // eslint-disable-line no-undef
-        reader.onload = e => resolve({ data: { link: e.target.result } });
-        reader.onerror = e => reject(e);
-        reader.readAsDataURL(file);
-      });
-  }
+const mapStateToProps = (state) => {
+    return {
+        categories: state.categories
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({addProject}, dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(NewProjectModal);

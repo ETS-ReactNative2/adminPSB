@@ -12,7 +12,6 @@ import { Button, Input, Form, Label, Icon, Modal, Header } from 'semantic-ui-rea
 import { Redirect } from 'react-router-dom';
 import './../css/general.css';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import awsmobile from './../aws-exports';
 import {Auth} from 'aws-amplify';
 export default class Register extends Component {
 

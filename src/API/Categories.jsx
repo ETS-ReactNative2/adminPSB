@@ -2,73 +2,71 @@ import React, { Component } from 'react';
 import { Button, Table, Loader } from 'semantic-ui-react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import { Link} from 'react-router-dom';
-import awsmobile from './../aws-exports';
 import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import './../css/general.css';
 import CategoryModal from './CategoryModal';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {deleteCategory} from '../actions/index.js'
 
-export default class Categories extends Component{
+class Categories extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
-            data: [],
-            isOpen: false
+            isOpen: false,
+            column: null,
+            direction: null
         };
-        this.deleteCategory = this.deleteCategory.bind(this);
     }
 
     toggleModal = () => {
-        if(this.state.isOpen){
-            this.fetchCategories();
-        }
         this.setState({
           isOpen: !this.state.isOpen
         });
-      }
-
-    componentDidMount() {
-        this.fetchCategories();
     }
 
-    fetchCategories = async () => {
-        this.setState(() => {
-            return {
-                loading: true
-            }
-        });
 
-        API.get('CATEGORIESCRUD','/CATEGORIES')
-            .then(data => {
-                console.log(data);
-                this.setState({
-                    data: data,
-                    loading: false
-                });
-            })
-            .catch ( err => console.log(err));
-    }
-
-    deleteCategory(categoryToDeleteName){
+    deleteCategory = (categoryToDeleteName) => {
         let myInit = { 
             headers: {} 
         }
         API.del('CATEGORIESCRUD','/CATEGORIES/object/'+categoryToDeleteName,myInit )
         .then(data => {
             console.log(data);
+            this.props.deleteCategory(categoryToDeleteName);
             this.setState({
-                data: data,
                 loading: false
             });
         })
         .catch ( err => console.log(err))
-        this.fetchCategories();
     }
+
+    handleSort = clickedColumn => () => {
+        {/*const { column, categories, direction } = this.state;
+    
+       } if (column !== clickedColumn) {
+          this.setState({
+            column: clickedColumn,
+            categories: _.sortBy(categories, [clickedColumn]),
+            direction: 'ascending',
+          })
+    
+          return
+        } 
+    
+        this.setState({
+            categories: categories.reverse(),
+          direction: direction === 'ascending' ? 'descending' : 'ascending',
+        })*/}
+      }
 
 
     render() {
+        const { column, direction } = this.state;
+        const categories = this.props.categories;
         return (
             <CSSTransitionGroup
             transitionName="sample-app"
@@ -87,20 +85,26 @@ export default class Categories extends Component{
                             onClose={this.toggleModal}>
                             
                         </CategoryModal>
-                        <Table selectable>
+                        <Table sortable selectable>
                             <Table.Header className="categoriesHeader">
                                 <Table.Row>
-                                    <Table.HeaderCell>Catégories </Table.HeaderCell>
+                                    <Table.HeaderCell
+                                    sorted={column === 'categories' ? direction : null}
+                                    onClick={this.handleSort('categories')}
+                                    >
+                                        Catégories 
+                                    </Table.HeaderCell>
                                     <Table.HeaderCell width={2} ></Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>
-                                {this.state.data.map((data) =>
-                                    <Table.Row key={data.NAME}>
-                                        <Table.Cell>{data.NAME}</Table.Cell>
+                                {categories.map((data) =>
+                                    <Table.Row key={data.name}>
+                                        <Table.Cell>{data.name}</Table.Cell>
                                         <Table.Cell textAlign='center'>
                                                 <img src={require('../Images/closeIcon.png')} 
-                                                onClick={() => {if(window.confirm("Tu veux vraiment supprimer cette catégorie ?")) this.deleteCategory(data.NAME)}}
+                                                style={{cursor: "pointer"}}
+                                                onClick={() => {if(window.confirm("Tu veux vraiment supprimer cette catégorie ?")) this.deleteCategory(data.name)}}
                                                 width="16" 
                                                 height="16" />
                                         </Table.Cell>
@@ -116,3 +120,15 @@ export default class Categories extends Component{
     }
 
 }
+
+const mapStateToProps = (state) => {
+    return {
+        categories: state.categories
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({deleteCategory}, dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Categories);

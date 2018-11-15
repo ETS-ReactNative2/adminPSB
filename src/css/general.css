@@ -1,18 +1,44 @@
 .nav-bar {
   background: green;
+  width: 100%;
+  height: 50px;
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 14
+}
+
+.nav-bar a:hover {
+  color:white;
+}
+
+.menu-item{
+  color: white;
+  margin-right: 60;
+  cursor: pointer;
 }
 
 .init-button {
   margin-left: 5px;
 }
 
-.fill-in {
-  margin: 10% 0 3% 20%;
-  width: 45%;
-  display: inline-block;
-  justify-content: 'center';
+.login-container{
+  display: flex;
   flex: 1;
+  flex-direction: column ;
+  align-items: center;
+  align-content: center;
+}
+
+.fill-in {
+  display: flex;
+  flex: 1;
+  flex-direction: column ;
+  align-items: center;
+  align-content: center;
+  width: 45%;
 }
 
 .button-login {

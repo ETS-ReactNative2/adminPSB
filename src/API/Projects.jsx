@@ -2,69 +2,56 @@ import React, { Component } from 'react';
 import { Button, Table, Loader, Icon } from 'semantic-ui-react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import { Link} from 'react-router-dom';
-import awsmobile from './../aws-exports';
 import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import './../css/general.css';
 import NewProjectModal from './NewProjectModal';
 import Modal from './Modal';
 import ExistingProjectModal from './ExistingProjectModal';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import {deleteProject} from '../actions/index.js'
 
-export default class Projects extends Component{
+class Projects extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
             loading: false,
-            data: [],
             newProjectOpen: false,
             existingProjectOpen: false,
             selectedProjectId: 0
         }
-        this.displayExistingProject = this.displayExistingProject.bind(this);
     }
 
-    componentDidMount() {
-        this.fetchProjects();
-    }
-
-    fetchProjects = async () => {
-        this.setState(() => {
-            return {
-                loading: true
-            }
-        });
-
-        API.get('PROJECTSCRUD','/PROJECTS')
-            .then(data => {
-                console.log(data);
-                this.setState({
-                    data: data,
-                    loading: false
-                });
-            })
-            .catch ( err => console.log(err))
+    deleteProject = (projectToDeleteId) => {
+        let myInit = { 
+            headers: {} 
+        }
+        API.del('PROJECTSCRUD','/PROJECTS/object/'+projectToDeleteId,myInit )
+        .then(data => {
+            console.log(data);
+            this.props.deleteProject(projectToDeleteId);
+            this.setState({
+                loading: false
+            });
+        })
+        .catch ( err => console.log(err))
     }
 
     toggleNewProjectModal = () => {
-        if(this.state.newProjectOpen){
-            this.fetchProjects();
-        }
         this.setState({
             newProjectOpen: !this.state.newProjectOpen
         });
     }
 
     toggleExistingProjectModal = () => {
-        if(this.state.existingProjectOpen){
-            this.fetchProjects();
-        }
         this.setState({
             existingProjectOpen: !this.state.existingProjectOpen
         });
     }
 
-    displayExistingProject(id){
+    displayExistingProject = (id) => {
         this.setState({
             existingProjectOpen: true,
             selectedProjectId: id
@@ -72,7 +59,7 @@ export default class Projects extends Component{
     }
 
     render() {
-
+        const projects = this.props.projects;
         const projectStyle = {
             cursor: "pointer",
             color: "blue",
@@ -95,11 +82,11 @@ export default class Projects extends Component{
                             <Modal show={this.state.newProjectOpen}
                                 onClose={this.toggleNewProjectModal}
                                 title="Création d'un nouveau projet">
-                                <NewProjectModal />
+                                <NewProjectModal onClose={this.toggleNewProjectModal}/>
                             </Modal>
                             <Modal show={this.state.existingProjectOpen}
                                 onClose={this.toggleExistingProjectModal}
-                                title="Projet">
+                                title="Description du projet">
                                 <ExistingProjectModal 
                                     selectedProjectId={this.state.selectedProjectId}
                                 />
@@ -116,14 +103,20 @@ export default class Projects extends Component{
                                     </Table.Row>
                                 </Table.Header>
                                 <Table.Body>
-                                    {this.state.data.map((data) =>
-                                        <Table.Row key={data.ID}>
-                                            <Table.Cell><span style={projectStyle} onClick={() => this.displayExistingProject(data.ID)}>{data.NAME}</span></Table.Cell>
-                                            <Table.Cell>{data.CATEGORY}</Table.Cell>
-                                            <Table.Cell>{data.START_DATE}</Table.Cell>
-                                            <Table.Cell>{data.END_DATE}</Table.Cell>
-                                            <Table.Cell></Table.Cell>
-                                            <Table.Cell></Table.Cell>
+                                    {projects.map((data) =>
+                                        <Table.Row key={data.id}>
+                                            <Table.Cell><span style={projectStyle} onClick={() => this.displayExistingProject(data.id)}>{data.name}</span></Table.Cell>
+                                            <Table.Cell>{data.category}</Table.Cell>
+                                            <Table.Cell>{data.startDate}</Table.Cell>
+                                            <Table.Cell>{data.endDate}</Table.Cell>
+                                            <Table.Cell>{data.location}</Table.Cell>
+                                            <Table.Cell textAlign='center'>
+                                                <img src={require('../Images/closeIcon.png')} 
+                                                style={{cursor: "pointer"}}
+                                                onClick={() => {if(window.confirm("Tu veux vraiment supprimer ce projet ?")) this.deleteProject(data.id)}}
+                                                width="16" 
+                                                height="16" />
+                                            </Table.Cell>
                                         </Table.Row>
                                     )}
                                 </Table.Body>
@@ -135,3 +128,15 @@ export default class Projects extends Component{
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        projects: state.projects
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({deleteProject}, dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(Projects);

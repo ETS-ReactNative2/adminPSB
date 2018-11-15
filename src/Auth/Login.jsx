@@ -9,11 +9,10 @@ See the License for the specific language governing permissions and limitations 
 import React, { Component } from 'react';
 import { Row, Icon } from 'react-materialize';
 import AppRoute from '../index';
-import { Segment, Button, Divider, Input, Form, Label, Modal, Image } from 'semantic-ui-react';
+import { Button, Input, Form, Label, Modal, Image } from 'semantic-ui-react';
 import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom';
 import '../css/general.css';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import awsmobile from '../aws-exports';
 import {Auth} from 'aws-amplify';
 export default class Login extends Component {
     state = {
@@ -21,8 +20,6 @@ export default class Login extends Component {
         password: '',
         logInStatus: false,
         forgetPasswor: false,
-        invalidUserNameMessage: '',
-        invalidPasswordMessage: '',
         modalOpen: false,
         cognitoUser: ''
     };
@@ -65,8 +62,13 @@ export default class Login extends Component {
                 transitionLeave={true}>
             <div>
                 { !logInStatus  && (
-                    <div>
+                    <div className="login-container">
                         <div className="fill-in" >
+                            <div
+                            style={{marginBottom: 100}}
+                            >
+                                <img src={require('../Images/homeLogo.png')} />
+                            </div>
                             <div>
                                 <Row>
                                     <Form.Field>
@@ -86,8 +88,18 @@ export default class Login extends Component {
                                 </Row>
                             </div>
                             <div >
-                                <Link to="/forget"><a>Forgot Password?</a></Link>
-                                <Button primary fluid onClick={this.signInCustomer}>Login</Button>
+                                <Link 
+                                style={{color: 'green'}}
+                                to="/forget"
+                                >
+                                    Forgot Password?
+                                </Link>
+                                <Button primary fluid 
+                                style={{backgroundColor: 'green', marginTop: 5}}
+                                onClick={this.signInCustomer}
+                                >
+                                    Login
+                                </Button>
                             </div>
                         </div>
                     </div>
