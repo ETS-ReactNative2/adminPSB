@@ -47,17 +47,17 @@ export const deleteProject = id => ({
     id
 })
 
-export const editWelcomeText = (welcomeText) => ({
-    type: 'EDIT_WELCOME_TEXT',
-    welcomeText
+export const editWelcomeEditorState = (welcomeEditorState) => ({
+    type: 'EDIT_WELCOME_EDITOR_STATE',
+    welcomeEditorState
 })
 
-export const editCompaniesText = (companiesText) => ({
-    type: 'EDIT_COMPANIES_TEXT',
-    companiesText
+export const editCompaniesEditorState = (companiesEditorState) => ({
+    type: 'EDIT_COMPANIES_EDITOR_STATE',
+    companiesEditorState
 })
 
-export const editMembersText = (membersText) => ({
-    type: 'EDIT_MEMBERS_TEXT',
-    membersText
+export const editMembersEditorState = (membersEditorState) => ({
+    type: 'EDIT_MEMBERS_EDITOR_STATE',
+    membersEditorState
 })

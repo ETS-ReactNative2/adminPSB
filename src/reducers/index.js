@@ -2,17 +2,17 @@ import {combineReducers} from 'redux';
 
 function helpUs(state = [], action){
     switch(action.type){
-        case 'EDIT_WELCOME_TEXT':
+        case 'EDIT_WELCOME_EDITOR_STATE':
             return Object.assign({}, state, {
-                welcomeText: action.welcomeText
+                welcomeEditorState: action.welcomeEditorState
             })
-        case 'EDIT_MEMBERS_TEXT':
+        case 'EDIT_MEMBERS_EDITOR_STATE':
             return Object.assign({}, state, {
-                membersText: action.membersText
+                membersEditorState: action.membersEditorState
             })
-        case 'EDIT_COMPANIES_TEXT':
+        case 'EDIT_COMPANIES_EDITOR_STATE':
             return Object.assign({}, state, {
-                companiesText: action.companiesText
+                companiesEditorState: action.companiesEditorState
             })
         default:
             return state

@@ -7,80 +7,59 @@ import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import './../css/general.css';
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtml from 'draftjs-to-html';
-import {editWelcomeText} from '../actions/index.js';
-import {editMembersText} from '../actions/index.js';
-import {editCompaniesText} from '../actions/index.js';
+import {editWelcomeEditorState} from '../actions/index.js';
+import {editMembersEditorState} from '../actions/index.js';
+import {editCompaniesEditorState} from '../actions/index.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
+import {Alert} from 'react-bootstrap';
+import {Tabs, Tab, TabList, TabPanel} from 'react-tabs';
 
 class HelpUs extends Component{
 
     constructor(props) {
         super(props);
         this.state = {
-            welcomeEditorState: EditorState.createEmpty(),
-            membersEditorState: EditorState.createEmpty(),
-            companiesEditorState: EditorState.createEmpty(),
+            currentSavedState: EditorState.createEmpty(),
+            saveAlert: "",
+            tabIndex: 0,
+            welcomeChanged: false,
+            membersChanged: false,
+            companiesChanged: false
         };
     }
 
-    componentDidMount() {
-        this.fetchHelpUsDetails();
-    }
-
-    fetchHelpUsDetails = () => {
-        const welcomeText = this.props.welcomeText?this.props.welcomeText:"";
-        const welcomeContentBlock = htmlToDraft(welcomeText);
-        let welcomeEditorState= EditorState.createEmpty();
-        if (welcomeContentBlock) {
-            const welcomeContentState = ContentState.createFromBlockArray(welcomeContentBlock.contentBlocks);
-            welcomeEditorState= EditorState.createWithContent(welcomeContentState);
-        }
-        const membersText = this.props.membersText?this.props.membersText:"";
-        const membersContentBlock = htmlToDraft(membersText);
-        let membersEditorState= EditorState.createEmpty();
-        if (membersContentBlock) {
-            const membersContentState = ContentState.createFromBlockArray(membersContentBlock.contentBlocks);
-            membersEditorState= EditorState.createWithContent(membersContentState);
-        }
-        const companiesText = this.props.companiesText?this.props.companiesText:"";
-        const companiesContentBlock = htmlToDraft(companiesText);
-        let companiesEditorState= EditorState.createEmpty();
-        if (companiesContentBlock) {
-            const companiesContentState = ContentState.createFromBlockArray(companiesContentBlock.contentBlocks);
-            companiesEditorState= EditorState.createWithContent(companiesContentState);
-        }
-        this.setState({
-            welcomeEditorState: welcomeEditorState,
-            membersEditorState: membersEditorState,
-            companiesEditorState: companiesEditorState,
-        });
-    }
-
     onWelcomeEditorStateChange = (welcomeEditorState) => {
-        this.setState({
-          welcomeEditorState,
-        });
+        this.props.editWelcomeEditorState(welcomeEditorState);
+        if(this.props.welcomeEditorState.getCurrentContent() != welcomeEditorState.getCurrentContent()){
+            this.setState({
+                welcomeChanged: true
+            });
+        }
     };
 
     onMembersEditorStateChange = (membersEditorState) => {
-        this.setState({
-          membersEditorState,
-        });
+        this.props.editMembersEditorState(membersEditorState);        
+        if(this.props.membersEditorState.getCurrentContent() != membersEditorState.getCurrentContent()){
+            this.setState({
+                membersChanged: true
+            });
+        }
     };
 
     onCompaniesEditorStateChange = (companiesEditorState) => {
-        this.setState({
-          companiesEditorState,
-        });
+        this.props.editCompaniesEditorState(companiesEditorState);
+        if(this.props.companiesEditorState.getCurrentContent() != companiesEditorState.getCurrentContent()){
+            this.setState({
+                companiesChanged: true
+            });
+        }
     };
 
-    handleSubmit = (event) => {
+    handleSubmitWelcome = (event) => {
         event.preventDefault();
-        const welcomeText = draftToHtml(convertToRaw(this.state.welcomeEditorState.getCurrentContent()));
-        const membersText = draftToHtml(convertToRaw(this.state.membersEditorState.getCurrentContent()));
-        const companiesText = draftToHtml(convertToRaw(this.state.companiesEditorState.getCurrentContent()));
+        const welcomeText = draftToHtml(convertToRaw(this.props.welcomeEditorState.getCurrentContent()));
         let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {
@@ -91,12 +70,19 @@ class HelpUs extends Component{
         API.post('DESCRIPTIONCRUD','/DESCRIPTION', requestParams)
         .then(data => {
             console.log(data);
-            this.props.editWelcomeText(welcomeText);
+            this.setState({
+                welcomeChanged: false
+            });
         })
         .catch((error) => {
             console.log(error);
         });
-        requestParams = {
+    };
+
+    handleSubmitMembers = (event) => {
+        event.preventDefault();
+        const membersText = draftToHtml(convertToRaw(this.props.membersEditorState.getCurrentContent()));
+        let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {
                 'NAME': 'MEMBERS_TEXT',
@@ -106,12 +92,19 @@ class HelpUs extends Component{
         API.post('DESCRIPTIONCRUD','/DESCRIPTION', requestParams)
         .then(data => {
             console.log(data);
-            this.props.editMembersText(membersText);
+            this.setState({
+                membersChanged: false
+            });
         })
         .catch((error) => {
             console.log(error);
         });
-        requestParams = {
+    };
+
+    handleSubmitCompanies = (event) => {
+        event.preventDefault();
+        const companiesText = draftToHtml(convertToRaw(this.props.companiesEditorState.getCurrentContent()));
+        let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {
                 'NAME': 'COMPANIES_TEXT',
@@ -121,7 +114,9 @@ class HelpUs extends Component{
         API.post('DESCRIPTIONCRUD','/DESCRIPTION', requestParams)
         .then(data => {
             console.log(data);
-            this.editCompaniesText(companiesText);
+            this.setState({
+                companiesChanged: false
+            });
         })
         .catch((error) => {
             console.log(error);
@@ -130,63 +125,83 @@ class HelpUs extends Component{
 
     render() {
         return (
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}> 
-                <form onSubmit={this.handleSubmit}> 
-                    <div style ={{width:'80%'}}>
-                        <label style={{fontSize: 14, color: 'black'}}>Texte d'accueil</label>
-                        <Editor
-                            editorState={this.state.welcomeEditorState}
-                            toolbarClassName="toolbarClassName"
-                            wrapperClassName="wrapperClassName"
-                            editorClassName="editorStyle"
-                            onEditorStateChange={this.onWelcomeEditorStateChange}
-                            toolbar={{
-                                image: {
-                                    uploadCallback: this.uploadImageCallBack,
-                                    alt: { present: true, mandatory: false },
-                                    previewImage: true,
-                                },
-                            }}
-                        />
-                    </div>
-                    <div style ={{width:'80%'}}>
-                        <label style={{fontSize: 14, color: 'black'}}>Texte pour futurs membres</label>
-                        <Editor
-                            editorState={this.state.membersEditorState}
-                            toolbarClassName="toolbarClassName"
-                            wrapperClassName="wrapperClassName"
-                            editorClassName="editorStyle"
-                            onEditorStateChange={this.onMembersEditorStateChange}
-                            toolbar={{
-                                image: {
-                                    uploadCallback: this.uploadImageCallBack,
-                                    alt: { present: true, mandatory: false },
-                                    previewImage: true,
-                                },
-                            }}
-                        />
-                    </div>
-                    <div style ={{width:'80%'}}>
-                        <label style={{fontSize: 14, color: 'black'}}>Texte pour les entreprises</label>
-                        <Editor
-                            editorState={this.state.companiesEditorState}
-                            toolbarClassName="toolbarClassName"
-                            wrapperClassName="wrapperClassName"
-                            editorClassName="editorStyle"
-                            onEditorStateChange={this.onCompaniesEditorStateChange}
-                            toolbar={{
-                                image: {
-                                    uploadCallback: this.uploadImageCallBack,
-                                    alt: { present: true, mandatory: false },
-                                    previewImage: true,
-                                },
-                            }}
-                        />
-                    </div>
-                    <button className='saveData' >
-                        Sauvegarder
-                    </button>
-                </form>
+            <div style={{width: '100%'}}> 
+                <Tabs>
+                    <TabList>
+                        <Tab> Accueil </Tab>
+                        <Tab> Devenir membre </Tab>
+                        <Tab> Espace entreprises </Tab>
+                    </TabList>
+                    <TabPanel>
+                        <form onSubmit={this.handleSubmitWelcome}>
+                            <div style ={{width:'80%'}}>
+                                <Editor
+                                    editorState={this.props.welcomeEditorState}
+                                    toolbarClassName="toolbarClassName"
+                                    wrapperClassName="wrapperClassName"
+                                    editorClassName="editorStyle"
+                                    onEditorStateChange={this.onWelcomeEditorStateChange}
+                                    toolbar={{
+                                        image: {
+                                            uploadCallback: this.uploadImageCallBack,
+                                            alt: { present: true, mandatory: false },
+                                            previewImage: true,
+                                        },
+                                    }}
+                                />
+                            </div>
+                            {this.state.welcomeChanged?<button className='saveData'>
+                                Sauvegarder
+                            </button>:null}
+                        </form>
+                    </TabPanel>
+                    <TabPanel>
+                        <form onSubmit={this.handleSubmitMembers}>
+                            <div style ={{width:'80%'}}>
+                                <Editor
+                                    editorState={this.props.membersEditorState}
+                                    toolbarClassName="toolbarClassName"
+                                    wrapperClassName="wrapperClassName"
+                                    editorClassName="editorStyle"
+                                    onEditorStateChange={this.onMembersEditorStateChange}
+                                    toolbar={{
+                                        image: {
+                                            uploadCallback: this.uploadImageCallBack,
+                                            alt: { present: true, mandatory: false },
+                                            previewImage: true,
+                                        },
+                                    }}
+                                />
+                            </div>
+                            {this.state.membersChanged?<button className='saveData'>
+                                Sauvegarder
+                            </button>:null}
+                        </form>
+                    </TabPanel>
+                    <TabPanel>
+                        <form onSubmit={this.handleSubmitCompanies}> 
+                            <div style ={{width:'80%'}}>
+                                <Editor
+                                    editorState={this.props.companiesEditorState}
+                                    toolbarClassName="toolbarClassName"
+                                    wrapperClassName="wrapperClassName"
+                                    editorClassName="editorStyle"
+                                    onEditorStateChange={this.onCompaniesEditorStateChange}
+                                    toolbar={{
+                                        image: {
+                                            uploadCallback: this.uploadImageCallBack,
+                                            alt: { present: true, mandatory: false },
+                                            previewImage: true,
+                                        },
+                                    }}
+                                />
+                            </div>
+                            {this.state.companiesChanged?<button className='saveData'>
+                                Sauvegarder
+                            </button>:null}
+                        </form>
+                    </TabPanel>
+                </Tabs>
             </div>
         );
     }
@@ -195,14 +210,14 @@ class HelpUs extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        welcomeText: state.helpUs.welcomeText,
-        membersText: state.helpUs.membersText,
-        companiesText: state.helpUs.companiesText
+        welcomeEditorState: state.helpUs.welcomeEditorState,
+        membersEditorState: state.helpUs.membersEditorState,
+        companiesEditorState: state.helpUs.companiesEditorState
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({editWelcomeText, editMembersText, editCompaniesText}, dispatch);
+    return bindActionCreators({editWelcomeEditorState, editCompaniesEditorState, editMembersEditorState}, dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(HelpUs);

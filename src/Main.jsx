@@ -13,6 +13,8 @@ import Categories from './API/Categories';
 import HelpUs from './API/HelpUs';
 import Login from './Auth/Login';
 import AppRoute from './index';
+import htmlToDraft from 'html-to-draftjs';
+import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import { BrowserRouter, Route, Link, Switch} from 'react-router-dom';
 import './css/general.css';
 import {Auth} from 'aws-amplify';
@@ -23,9 +25,9 @@ import {addCategory} from './actions/index.js'
 import {addProject} from './actions/index.js'
 import {cleanProjects} from './actions/index.js';
 import {cleanCategories} from './actions/index.js';
-import {editWelcomeText} from './actions/index.js';
-import {editCompaniesText} from './actions/index.js';
-import {editMembersText} from './actions/index.js';
+import {editWelcomeEditorState} from './actions/index.js';
+import {editCompaniesEditorState} from './actions/index.js';
+import {editMembersEditorState} from './actions/index.js';
 
 class Main extends Component {
 
@@ -89,7 +91,14 @@ class Main extends Component {
         API.get('DESCRIPTIONCRUD','/DESCRIPTION/WELCOME_TEXT')
             .then(data => {
                 console.log(data);
-                this.props.editWelcomeText(data[0].CONTENT);
+                const welcomeText = data[0].CONTENT;
+                const welcomeContentBlock = htmlToDraft(welcomeText);
+                let welcomeEditorState= EditorState.createEmpty();
+                if (welcomeContentBlock) {
+                    const welcomeContentState = ContentState.createFromBlockArray(welcomeContentBlock.contentBlocks);
+                    welcomeEditorState= EditorState.createWithContent(welcomeContentState);
+                }
+                this.props.editWelcomeEditorState(welcomeEditorState);
                 this.setState({
                     loading: false
                 });
@@ -98,7 +107,14 @@ class Main extends Component {
         API.get('DESCRIPTIONCRUD','/DESCRIPTION/MEMBERS_TEXT')
             .then(data => {
                 console.log(data);
-                this.props.editMembersText(data[0].CONTENT);
+                const membersText = data[0].CONTENT;
+                const membersContentBlock = htmlToDraft(membersText);
+                let membersEditorState= EditorState.createEmpty();
+                if (membersContentBlock) {
+                    const membersContentState = ContentState.createFromBlockArray(membersContentBlock.contentBlocks);
+                    membersEditorState= EditorState.createWithContent(membersContentState);
+                }
+                this.props.editMembersEditorState(membersEditorState);
                 this.setState({
                     loading: false
                 });
@@ -107,7 +123,14 @@ class Main extends Component {
         API.get('DESCRIPTIONCRUD','/DESCRIPTION/COMPANIES_TEXT')
             .then(data => {
                 console.log(data);
-                this.props.editCompaniesText(data[0].CONTENT);
+                const companiesText = data[0].CONTENT;
+                const companiesContentBlock = htmlToDraft(companiesText);
+                let companiesEditorState= EditorState.createEmpty();
+                if (companiesContentBlock) {
+                    const companiesContentState = ContentState.createFromBlockArray(companiesContentBlock.contentBlocks);
+                    companiesEditorState= EditorState.createWithContent(companiesContentState);
+                }
+                this.props.editCompaniesEditorState(companiesEditorState);
                 this.setState({
                     loading: false
                 });
@@ -178,7 +201,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({addCategory, addProject, cleanProjects, cleanCategories, editWelcomeText, editCompaniesText, editMembersText}, dispatch);
+    return bindActionCreators({addCategory, addProject, cleanProjects, cleanCategories, editWelcomeEditorState, editCompaniesEditorState, editMembersEditorState}, dispatch);
 }
 
 export default connect(null,mapDispatchToProps)(Main);
