@@ -6,27 +6,50 @@ import { connect } from 'react-redux';
 
 class Home extends Component{
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            lastUpdatedDate: ""
+        };
+    }
+
+    componentDidMount() {
+        this.fetchLastUpdateDate();
+    }
+    
+    //Fetch the last updated date from server 
+    fetchLastUpdateDate = async () => {
+    API.get('MISC','/ADMIN/LAST_UPDATED_DATE')
+        .then(data => {
+            console.log(data);
+            const lastUpdatedDate = data[0].VALUE;
+            if(lastUpdatedDate){
+                this.setState({
+                    lastUpdatedDate : lastUpdatedDate
+                })
+            }
+        })
+        .catch ( err => console.log(err))
+    }
+
     render() {
         return (
             <div 
-            className="content-text"
-            style={{marginLeft: 30}}> 
+            className="content-text"> 
                 Bienvenue sur l'interface administrateur pour l'appli PSB
-                <div
-                style={{marginTop: 50}}>
+                <div 
+                    className="next-paragraph">
                     Il y a actuellement :
                     <ul
                     style={{marginLeft:20}}
                     >
                         <li>- {this.props.categories.length} categories</li>
                         <li>- {this.props.projects.length} projets en cours</li>
-                        <li>- O projets à venir</li>
-                        <li>- P membres</li>
                     </ul>
                 </div>
                 <div
-                    style={{marginTop: 50}}>
-                    Dernière mise à jour : le 21-02-2018
+                    className="next-paragraph">
+                    Dernière mise à jour : le {this.state.lastUpdatedDate}
                 </div>
             </div>
 

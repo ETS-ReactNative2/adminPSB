@@ -63,22 +63,31 @@ export default class Login extends Component {
             <div>
                 { !logInStatus  && (
                     <div className="login-container">
-                        <div className="fill-in" >
+                        <div className="login-fill-in" >
                             <div
-                            style={{marginBottom: 100}}
-                            >
+                                className="login-element">
                                 <img src={require('../Images/homeLogo.png')} />
                             </div>
                             <div>
                                 <Row>
                                     <Form.Field>
-                                        <Input type="text" icon="user" iconPosition="left" placeholder="Username" style={{marginRight: 4 + 'em'}}
+                                        <Input 
+                                            type="text" 
+                                            icon="user" 
+                                            iconPosition="left" 
+                                            placeholder="Identifiant" 
+                                            className="login-field"
                                             onChange = {(event) => this.setState({username:event.target.value, invalidCredentialsMessage: ''})} />
                                     </Form.Field>
                                 </Row>
                                 <Row>
                                     <Form.Field>
-                                        <Input type="password" icon="hashtag" iconPosition='left'  placeholder="Password" style={{marginRight: 4 + 'em'}}
+                                        <Input 
+                                            type="password" 
+                                            icon="hashtag" 
+                                            iconPosition='left'  
+                                            placeholder="Mot de passe" 
+                                            className="login-field"
                                             onKeyPress= {(event) => this.handleKeyPress(event)}
                                             onChange = {(event) => this.setState({password:event.target.value, invalidCredentialsMessage: ''})}/>
                                     </Form.Field>
@@ -89,16 +98,16 @@ export default class Login extends Component {
                             </div>
                             <div >
                                 <Link 
-                                style={{color: 'green'}}
+                                className="login-link"
                                 to="/forget"
                                 >
-                                    Forgot Password?
+                                    Mot de passe oublié?
                                 </Link>
                                 <Button primary fluid 
-                                style={{backgroundColor: 'green', marginTop: 5}}
-                                onClick={this.signInCustomer}
+                                    style={{backgroundColor: 'green', marginTop: 5}}
+                                    onClick={this.signInCustomer}
                                 >
-                                    Login
+                                    Se connecter
                                 </Button>
                             </div>
                         </div>

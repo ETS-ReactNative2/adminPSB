@@ -4,14 +4,18 @@ import {API} from 'aws-amplify';
 import { Button} from 'semantic-ui-react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {addCategory} from '../actions/index.js'
+import {addCategory} from '../actions/index.js';
+import './../css/api.css';
+import { toast } from 'react-toastify';
+
 
 class CategoryModal extends React.Component {
 
     static propTypes = {
         onClose: PropTypes.func.isRequired,
         show: PropTypes.bool,
-        children: PropTypes.node
+        children: PropTypes.node,
+        hasError: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -24,26 +28,49 @@ class CategoryModal extends React.Component {
       }
 
 
+      //Create a new category on server side
       handleSubmit(event) {
         event.preventDefault();
         const categoryName = this.state.name;
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body : {
-                'NAME': categoryName
+        
+        if(this.hasNoDuplicate(categoryName)){
+            let requestParams = {
+                headers: {'content-type': 'application/json'},
+                body : {
+                    'NAME': categoryName
+                }
             }
+            API.post('CATEGORIESCRUD','/CATEGORIES', requestParams)
+            .then(data => {
+                console.log(data);
+                this.props.addCategory(categoryName);
+                this.props.hasError(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                this.props.hasError(true);
+            });
+            this.props.onClose();
         }
-        API.post('CATEGORIESCRUD','/CATEGORIES', requestParams)
-        .then(data => {
-            console.log(data);
-            this.props.addCategory(categoryName);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-        this.props.onClose();
     };
 
+    //Check if there is a category with the name chosen by the user already exist
+    hasNoDuplicate = (categoryName) => {
+        let result = true;
+        this.props.data.map((cat) => {
+            if(cat.name === categoryName){
+                toast.info(
+                    <div style ={{textAlign:'center'}}>
+                        Cette catégorie existe déjà
+                    </div>
+                );
+                result = false;
+            }
+        })
+        return result;
+    }
+
+    //Update the name of the category to add
     handleChange(event) {
         this.setState({name: event.target.value})
       }
@@ -53,43 +80,33 @@ class CategoryModal extends React.Component {
         return null;
         }
 
-        // The gray background
-        const backdropStyle = {
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            width:'100%',
-            height: '100%',
-            padding: 50,
-        };
-
-        const modalStyle = {
-            backgroundColor: '#fff',
-            borderRadius: 5,
-            maxWidth: 400,
-            minHeight: 50,
-            margin: '0 auto',
-            padding: 20
-        };
-
         return (
-        <div style={backdropStyle}>
-            <div style={modalStyle}>
+        <div className="backdrop-content">
+            <div className="modal-content">
                 <div>
                     <img src={require('../Images/closeIcon2.png')} 
                         onClick={() => {this.props.onClose();}}
-                        style={{float:"right", cursor: "pointer"}}
+                        className="icon-style"
                         width="16" 
                         height="16" 
                     />
                 </div>
-                <div style ={{marginBottom:15, fontWeight: "bold"}}> Création d'une nouvelle catégorie </div>
+                <div 
+                    className ="modal-title">
+                    Création d'une nouvelle catégorie 
+                </div>
                 <form onSubmit={this.handleSubmit}> 
-                    <label> Nom : 
-                        <input autoFocus style={{height: '2rem', width: 200, marginLeft: 20}} onChange={this.handleChange.bind(this)} type="text" name="categoryName" value={this.state.name} />
+                    <label> 
+                        Nom : 
+                        <input 
+                            autoFocus 
+                            onChange={this.handleChange.bind(this)} 
+                            type="text" 
+                            name="categoryName" 
+                            value={this.state.name} />
                     </label>
-                    <button className='saveData' >
+                    <button 
+                        className='saveData' >
                         Créer
                     </button>
                 </form>

@@ -34,7 +34,7 @@ export default class Forget extends Component {
     handlePasswordMatchChange = (e) => {
         e.preventDefault();
         const value = e.target.value;
-        const message = this.checkPasswordMatch(value, this.state.password) ? '' : 'Password does not match';
+        const message = this.checkPasswordMatch(value, this.state.password) ? '' : 'Les mots de passe ne correspondent pas';
         this.setState(() => {
             return {
                 passwordMatch: value,
@@ -54,7 +54,7 @@ export default class Forget extends Component {
         if (!username) {
             this.setState(() => {
                 return {
-                    invalidCodeOrPasswordMessage: 'Please input valid username'
+                    invalidCodeOrPasswordMessage: 'Merci de saisir un identifiant correct'
                 }
             })
         }
@@ -99,7 +99,7 @@ export default class Forget extends Component {
         if (!code) {
             this.setState(() => {
                 return {
-                    invalidCodeOrPasswordMessage: 'Verification code can not be empty'
+                    invalidCodeOrPasswordMessage: 'Le code de vérification ne peut être vide'
                 }
             });
             return;
@@ -169,38 +169,93 @@ export default class Forget extends Component {
                 transitionLeave={true}>
             <div>
                 { !resetSuccess && (
-                <div>
-                    <div className="fill-in">
-                        { !enterReset && !enterInputPassword && (
-                        <Form.Field>
-                            <Input type="text" icon="users" iconPosition="left" placeholder="Username" style={{marginRight: 4 + 'em'}}
-                                onChange = {(event) => this.setState({username:event.target.value, invalidCodeOrPasswordMessage: ''})} />
-                            { invalidCodeOrPasswordMessage && <Label basic color="red" pointing="left">{ invalidCodeOrPasswordMessage }</Label> }
-                        </Form.Field>
-                        )}
-                        { enterReset && !enterInputPassword && (
-                        <Form.Field>
-                            <Input type="text" icon="code" iconPosition="left" placeholder="Verification Code" style={{marginRight: 4 + 'em'}}
-                                onChange = {(event) => this.setState({code:event.target.value, invalidCodeOrPasswordMessage: '', invalidCodeMessage: ''})}/>
-                            { invalidCodeOrPasswordMessage && <Label basic color="red" pointing="left">{ invalidCodeOrPasswordMessage }</Label> }
-                        </Form.Field>
-                        )}
-                        { enterInputPassword && (
-                        <Form.Field>
-                            <Input type="password" icon="code" iconPosition="left" placeholder="Password" style={{marginRight: 4 + 'em'}}
-                                onChange = {(event) => this.setState({password:event.target.value, invalidPasswordMessage: '', invalidCodeOrPasswordMessage: ''})}/>
-                            <Input type="password" icon="code" iconPosition="left" placeholder="Password" style={{marginRight: 4 + 'em'}} onChange={this.handlePasswordMatchChange} />
-                            { invalidPasswordMessage && <Label basic color="red" pointing="left">Password does not match</Label>}
-                            { invalidCodeOrPasswordMessage && <Label basic color="red" pointing="left">{ invalidCodeOrPasswordMessage }</Label> }
-                        </Form.Field>
-                        )}
-                    </div>
-                    <div className="button-holder">
-                        { enterReset && <Button primary fluid onClick={this.enterInputPassword}>Reset password</Button> }
-                        { enterInputPassword && <Button primary fluid onClick={this.handlePasswordReset}>Submit</Button> }
-                        { enableSend && <Button primary fluid onClick={this.sendVerificationCode}>Send Verficiation Code</Button> }
-                        { !enableResend && !enableSend && <Button fluid loading disabled>Waiting to resend</Button> }
-                        { enableResend && enterReset && <Button fluid color="purple" onClick={ this.sendVerificationCode }>Resend it!</Button> }
+                <div className="login-container">
+                    <div className="login-fill-in">
+                        <div
+                            className="login-element">
+                            <img src={require('../Images/homeLogo.png')} />
+                        </div>
+                        <div>
+                            { !enterReset && !enterInputPassword && (
+                            <Form.Field>
+                                <Input 
+                                    type="text" 
+                                    icon="users" 
+                                    iconPosition="left" 
+                                    placeholder="Identifiant" 
+                                    className="login-field"
+                                    onChange = {(event) => this.setState({username:event.target.value, invalidCodeOrPasswordMessage: ''})} 
+                                />
+                                { invalidCodeOrPasswordMessage && <Label basic color="red" pointing="left">{ invalidCodeOrPasswordMessage }</Label> }
+                            </Form.Field>
+                            )}
+                            { enterReset && !enterInputPassword && (
+                            <Form.Field>
+                                <Input 
+                                    type="text" 
+                                    icon="code" 
+                                    iconPosition="left" 
+                                    placeholder="Code de vérification" 
+                                    className="login-field"
+                                    onChange = {(event) => this.setState({code:event.target.value, invalidCodeOrPasswordMessage: '', invalidCodeMessage: ''})}
+                                />
+                                { invalidCodeOrPasswordMessage && <Label basic color="red" pointing="left">{ invalidCodeOrPasswordMessage }</Label> }
+                            </Form.Field>
+                            )}
+                            { enterInputPassword && (
+                            <Form.Field>
+                                <Input 
+                                    type="password" 
+                                    icon="code" 
+                                    iconPosition="left" 
+                                    placeholder="Mot de passe" 
+                                    className="login-field"
+                                    onChange = {(event) => this.setState({password:event.target.value, invalidPasswordMessage: '', invalidCodeOrPasswordMessage: ''})}
+                                />
+                                <Input 
+                                    type="password" 
+                                    icon="code" 
+                                    iconPosition="left" 
+                                    placeholder="Mot de passe" 
+                                    className="login-field"
+                                    onChange={this.handlePasswordMatchChange} 
+                                />
+                                { invalidPasswordMessage && <Label basic color="red" pointing="left">Mot de passe incorrect</Label>}
+                                { invalidCodeOrPasswordMessage && <Label basic color="red" pointing="left">{ invalidCodeOrPasswordMessage }</Label> }
+                            </Form.Field>
+                            )}
+                        </div>
+                        <div className="login-button-holder">
+                            { enterReset && 
+                                <Button primary fluid 
+                                    onClick={this.enterInputPassword}
+                                    style={{backgroundColor: 'green', marginTop: 5}}>
+                                    Réinitialiser le mot de passe
+                                </Button> }
+                            { enterInputPassword && 
+                                <Button primary fluid 
+                                    onClick={this.handlePasswordReset}
+                                    style={{backgroundColor: 'green', marginTop: 5}}>
+                                    Envoyer
+                                </Button> }
+                            { enableSend && 
+                                <Button primary fluid 
+                                    onClick={this.sendVerificationCode}
+                                    style={{backgroundColor: 'green', marginTop: 5}}>
+                                    Envoyer le code de vérification
+                                </Button> }
+                            { !enableResend && !enableSend && 
+                                <Button fluid loading disabled
+                                    style={{backgroundColor: 'green', marginTop: 5}}>
+                                    En attente d'envoi
+                                </Button> }
+                            { enableResend && enterReset && 
+                                <Button primary fluid 
+                                    style={{backgroundColor: 'green', marginTop: 5}}
+                                    onClick={ this.sendVerificationCode }>
+                                    Envoyer à nouveau!
+                                </Button> }
+                        </div>
                     </div>
                 </div>
                 )}

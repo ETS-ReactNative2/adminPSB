@@ -33,8 +33,6 @@ class Main extends Component {
 
     state = {
         logOut: false,
-        categories : [],
-        projects : []
     }
 
     componentDidMount() {
@@ -43,51 +41,32 @@ class Main extends Component {
         this.fetchHelpUsContent();
     }
 
+    //Fetch all the projects from server and store them in redux
     fetchProjects = async () => {
-        this.setState(() => {
-            return {
-                loading: true
-            }
-        });
-
         API.get('PROJECTSCRUD','/PROJECTS')
             .then(data => {
                 console.log(data);
                 data.map((item) => {
                     this.props.addProject(item.ID, item.NAME, item.DESCRIPTION, item.START_DATE,item.COVER_IMG, item.CATEGORY, item.END_DATE, item.LOCATION);
                 })
-                this.setState({
-                    loading: false
-                });
             })
             .catch ( err => console.log(err))
     }
 
+    //Fetch all the categories from server and store them in redux
     fetchCategories = async () => {
-        this.setState(() => {
-            return {
-                loading: true
-            }
-        });
         API.get('CATEGORIESCRUD','/CATEGORIES')
             .then(data => {
                 console.log(data);
                 data.map((item) => {
                     this.props.addCategory(item.NAME);
                 })
-                this.setState({
-                    loading: false
-                });
             })
             .catch ( err => console.log(err));
     }
 
+    //Fetch all the content linked to Helpus category and store it in redux
     fetchHelpUsContent = async () => {
-        this.setState(() => {
-            return {
-                loading: true
-            }
-        });
         API.get('DESCRIPTIONCRUD','/DESCRIPTION/WELCOME_TEXT')
             .then(data => {
                 console.log(data);
@@ -99,9 +78,6 @@ class Main extends Component {
                     welcomeEditorState= EditorState.createWithContent(welcomeContentState);
                 }
                 this.props.editWelcomeEditorState(welcomeEditorState);
-                this.setState({
-                    loading: false
-                });
             })
             .catch ( err => console.log(err));
         API.get('DESCRIPTIONCRUD','/DESCRIPTION/MEMBERS_TEXT')
@@ -115,9 +91,6 @@ class Main extends Component {
                     membersEditorState= EditorState.createWithContent(membersContentState);
                 }
                 this.props.editMembersEditorState(membersEditorState);
-                this.setState({
-                    loading: false
-                });
             })
             .catch ( err => console.log(err));
         API.get('DESCRIPTIONCRUD','/DESCRIPTION/COMPANIES_TEXT')
@@ -131,13 +104,11 @@ class Main extends Component {
                     companiesEditorState= EditorState.createWithContent(companiesContentState);
                 }
                 this.props.editCompaniesEditorState(companiesEditorState);
-                this.setState({
-                    loading: false
-                });
             })
             .catch ( err => console.log(err));
     }
 
+    //Sign out user
     signOut = async(e) => {
         e.preventDefault();
         Auth.signOut()
@@ -164,17 +135,19 @@ class Main extends Component {
                         <div>
                             <div className='nav-bar'>
                                 <Link className="menu-item" to="/main">Accueil</Link>
-                                <Link className="menu-item" to="/categories">Categories</Link>
+                                <Link className="menu-item" to="/categories">Catégories</Link>
                                 <Link className="menu-item" to="/projects">Projets</Link>
-                                <Link className="menu-item" to="/helpus">Help Us</Link>
+                                <Link className="menu-item" to="/helpus">Nous aider</Link>
                                 <div 
                                 className="menu-item" 
                                 onClick={this.signOut}>
-                                    Logout
+                                    Se déconnecter
                                 </div>
                             </div>
-                            <div className="content">
-                                <h2>Interface admin pour PSB App</h2>
+                            <div className="welcome-content" >
+                                <img src={require('./Images/homeLogo.png')} 
+                                height="50" />
+                                <div className="welcome-title"> Interface admin pour PSB App</div>
                             </div>
                             <Switch>
                                 <Route exact path="/main" component={Home} />
@@ -193,13 +166,7 @@ class Main extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        categories: state.categories,
-        projects: state.projects
-    }
-}
-
+//Redux
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({addCategory, addProject, cleanProjects, cleanCategories, editWelcomeEditorState, editCompaniesEditorState, editMembersEditorState}, dispatch);
 }

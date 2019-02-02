@@ -4,7 +4,7 @@ import {API} from 'aws-amplify';
 import PropTypes from 'prop-types';
 import {Editor} from 'react-draft-wysiwyg';
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
-import './../css/general.css';
+import './../css/api.css';
 import htmlToDraft from 'html-to-draftjs';
 import draftToHtml from 'draftjs-to-html';
 import {editWelcomeEditorState} from '../actions/index.js';
@@ -30,6 +30,7 @@ class HelpUs extends Component{
         };
     }
 
+    //Update client state after user edit welcome field
     onWelcomeEditorStateChange = (welcomeEditorState) => {
         this.props.editWelcomeEditorState(welcomeEditorState);
         if(this.props.welcomeEditorState.getCurrentContent() != welcomeEditorState.getCurrentContent()){
@@ -39,6 +40,7 @@ class HelpUs extends Component{
         }
     };
 
+    //Update client state after user edit members field
     onMembersEditorStateChange = (membersEditorState) => {
         this.props.editMembersEditorState(membersEditorState);        
         if(this.props.membersEditorState.getCurrentContent() != membersEditorState.getCurrentContent()){
@@ -48,6 +50,7 @@ class HelpUs extends Component{
         }
     };
 
+    //Update client state after user edit companies field
     onCompaniesEditorStateChange = (companiesEditorState) => {
         this.props.editCompaniesEditorState(companiesEditorState);
         if(this.props.companiesEditorState.getCurrentContent() != companiesEditorState.getCurrentContent()){
@@ -57,6 +60,7 @@ class HelpUs extends Component{
         }
     };
 
+    //Post to server the changes for welcome field
     handleSubmitWelcome = (event) => {
         event.preventDefault();
         const welcomeText = draftToHtml(convertToRaw(this.props.welcomeEditorState.getCurrentContent()));
@@ -79,6 +83,7 @@ class HelpUs extends Component{
         });
     };
 
+    //Post to server the changes for members field
     handleSubmitMembers = (event) => {
         event.preventDefault();
         const membersText = draftToHtml(convertToRaw(this.props.membersEditorState.getCurrentContent()));
@@ -101,6 +106,7 @@ class HelpUs extends Component{
         });
     };
 
+    //Post to server the changes for companies field
     handleSubmitCompanies = (event) => {
         event.preventDefault();
         const companiesText = draftToHtml(convertToRaw(this.props.companiesEditorState.getCurrentContent()));
@@ -128,18 +134,18 @@ class HelpUs extends Component{
             <div style={{width: '100%'}}> 
                 <Tabs>
                     <TabList>
-                        <Tab> Accueil </Tab>
+                        <Tab style={{marginLeft: '30px'}}> Accueil </Tab>
                         <Tab> Devenir membre </Tab>
                         <Tab> Espace entreprises </Tab>
                     </TabList>
-                    <TabPanel>
+                    <TabPanel className="tab-panel-style">
                         <form onSubmit={this.handleSubmitWelcome}>
-                            <div style ={{width:'80%'}}>
+                            <div>
                                 <Editor
                                     editorState={this.props.welcomeEditorState}
                                     toolbarClassName="toolbarClassName"
                                     wrapperClassName="wrapperClassName"
-                                    editorClassName="editorStyle"
+                                    editorClassName="editor-style2"
                                     onEditorStateChange={this.onWelcomeEditorStateChange}
                                     toolbar={{
                                         image: {
@@ -155,14 +161,14 @@ class HelpUs extends Component{
                             </button>:null}
                         </form>
                     </TabPanel>
-                    <TabPanel>
+                    <TabPanel className="tab-panel-style">
                         <form onSubmit={this.handleSubmitMembers}>
-                            <div style ={{width:'80%'}}>
+                            <div>
                                 <Editor
                                     editorState={this.props.membersEditorState}
                                     toolbarClassName="toolbarClassName"
                                     wrapperClassName="wrapperClassName"
-                                    editorClassName="editorStyle"
+                                    editorClassName="editor-style2"
                                     onEditorStateChange={this.onMembersEditorStateChange}
                                     toolbar={{
                                         image: {
@@ -178,14 +184,14 @@ class HelpUs extends Component{
                             </button>:null}
                         </form>
                     </TabPanel>
-                    <TabPanel>
+                    <TabPanel className="tab-panel-style">
                         <form onSubmit={this.handleSubmitCompanies}> 
-                            <div style ={{width:'80%'}}>
+                            <div>
                                 <Editor
                                     editorState={this.props.companiesEditorState}
                                     toolbarClassName="toolbarClassName"
                                     wrapperClassName="wrapperClassName"
-                                    editorClassName="editorStyle"
+                                    editorClassName="editor-style2"
                                     onEditorStateChange={this.onCompaniesEditorStateChange}
                                     toolbar={{
                                         image: {

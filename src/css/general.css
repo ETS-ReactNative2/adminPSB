@@ -20,8 +20,27 @@
   cursor: pointer;
 }
 
-.init-button {
-  margin-left: 5px;
+.welcome-content{
+  margin: 0 30px 30px 30px;
+  display: flex;
+  flex: 1;
+  flex-direction: row ;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.welcome-title{
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-left: 100;
+}
+
+div .content-text{
+  margin-left: 30px;
+}
+
+div .next-paragraph{
+  margin-top: 40px;
 }
 
 .login-container{
@@ -30,9 +49,10 @@
   flex-direction: column ;
   align-items: center;
   align-content: center;
+  height: 100%;
 }
 
-.fill-in {
+.login-fill-in {
   display: flex;
   flex: 1;
   flex-direction: column ;
@@ -41,30 +61,48 @@
   width: 45%;
 }
 
-.button-login {
-  margin: 10% 0 3% 20%;
-  width: 20px;
+.login-element{
+  margin-bottom: 100px;
+}
+
+.login-field{
+  margin-right: 4em;
+}
+
+.login-link{
+  color: green;
+}
+
+button .login-button{
+  background-color: green;
+  margin-top: 10px;
+}
+
+.login-button-holder {
+  margin-top: 10px;
+}
+
+.init-button {
+  margin-left: 5px;
 }
 
 .divider {
   background: none;
 }
 
-.button-holder {
-  width:45%;
-  margin-left: 20%
-}
-
 .sample-app-enter {
   opacity: 0.01;
 }
+
 .sample-app-enter.sample-app-enter-active {
   opacity: 1;
   transition: opacity 500ms ease-in;
 }
+
 .sample-app-leave {
   opacity: 1;
 }
+
 .sample-app-leave.sample-app-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
@@ -73,23 +111,18 @@
 .sample-app-appear {
   opacity: 0.01;
 }
+
 .sample-app-appear.sample-app-appear-active {
   opacity: 1;
   transition: opacity 500ms ease-in
 }
 
-.content {
-  margin: 0 5% 2% 5%
-}
 .logo {
   display: inline-block;
 }
+
 .content-button {
   margin-bottom: 10px;
-}
-
-div .content-text{
-  margin-left: 20px;
 }
 
 Button .login-button{

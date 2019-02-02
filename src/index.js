@@ -13,7 +13,6 @@ import { Button, Card, Row, Col, Icon } from 'react-materialize';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import Main from './Main';
 import Login from './Auth/Login';
-import Register from './Auth/Register';
 import Forget from './Auth/Forget';
 import awsmobile from './aws-exports';
 import Amplify,{Auth} from 'aws-amplify';
@@ -25,7 +24,6 @@ import rootReducer from './reducers/index.js';
 Amplify.configure(awsmobile);
 
 require('file-loader?name=[name].[ext]!./index.html');
-require("babel-core/register");
 require("babel-polyfill");
 
 const PublicRoute = ({ component: Component, authStatus, ...rest}) => (
@@ -96,7 +94,6 @@ export default class AppRoute extends Component {
                 <Switch>
                     <PublicRoute authStatus={this.state.authStatus} path='/' exact component={Login} />
                     <PublicRoute authStatus={this.state.authStatus} path='/login' exact component={Login} />
-                    <PublicRoute authStatus={this.state.authStatus} path='/register' exact component={Register} />
                     <PublicRoute authStatus={this.state.authStatus} path='/forget' exact component={Forget} />
                     <PrivateRoute authStatus={this.state.authStatus} path='/main' component={Main} />
                     <Route render={() => (<Redirect to="/login" />)} />
