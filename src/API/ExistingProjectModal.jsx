@@ -105,13 +105,12 @@ class ExistingProjectModal extends Component {
 
     updateLastUpdatedDate = () => {
         let d = new Date();
-        d= new Date(d.getTime()-3000000);
         const year = d.getFullYear().toString();
         const month = (d.getMonth()+1).toString().length==2?(d.getMonth()+1):"0"+(d.getMonth()+1).toString();
         const day = d.getDate().toString()==2?d.getDate().toString(): "0"+d.getDate().toString();
         const hours = d.getHours().toString().length==2?d.getHours().toString():"0"+d.getHours().toString();
         const mn = (parseInt(d.getMinutes()/5)*5).toString().length==2?(parseInt(d.getMinutes()/5)*5).toString():"0"+(parseInt(d.getMinutes()/5)*5).toString();
-        let currentDate = year+"-"+month+"-"+day+" "+hours+"h"+mn;
+        let currentDate = day+"/"+month+"/"+year+", à"+hours+"h"+mn;
         let requestParams = {
             headers: {'content-type': 'application/json'},
             body : {

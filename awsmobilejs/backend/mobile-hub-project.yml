@@ -16,26 +16,26 @@ features:
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: j+xRIEoOAguUOXwbS6B9DJClIoTEt/SZqPuTHJBig1I=
+            hashcode: Qpph1GetUw4pshOnrjkCQJU2thZ9GHoMEI0TPFZmn64=
             memorySize: '128'
-            modified: '2019-02-01T00:59:17.811+0000'
+            modified: '2019-02-02T00:47:39.575+0000'
             name: CATEGORIES
             runtime: nodejs6.10
             timeout: '3'
-            version: 59TlJgX.MZQKnzIDRrGBuu2FV0bQuKMe
+            version: nmZYv99yKK1uzquOQ9IZRUDx0_E4wbXN
           '/CATEGORIES/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/CATEGORIES-20190201164413.zip
             description: 'Handler for calls to resource path : /CATEGORIES/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: j+xRIEoOAguUOXwbS6B9DJClIoTEt/SZqPuTHJBig1I=
+            hashcode: Qpph1GetUw4pshOnrjkCQJU2thZ9GHoMEI0TPFZmn64=
             memorySize: '128'
-            modified: '2019-02-01T00:59:17.811+0000'
+            modified: '2019-02-02T00:47:39.575+0000'
             name: CATEGORIES
             runtime: nodejs6.10
             timeout: '3'
-            version: l0y55dOHRki9ITb26IAciTPqCinJYveN
+            version: IEBKnC8XQ1bapRJtMdv7jXTP6HC43cPm
       DESCRIPTIONCRUD: !com.amazonaws.mobilehub.v0.API 
         attributes:
           name: DESCRIPTIONCRUD
@@ -48,26 +48,26 @@ features:
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: Jhlk/swscDH/doKIlAOD3UfYuOzDjBZ4sqhzd6L8NBs=
+            hashcode: a+cQc4wwPNvLK++IjBJILiRXRpkd/3LxYWCF3k8HhQc=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.562+0000'
+            modified: '2019-02-02T00:47:36.666+0000'
             name: DESCRIPTIONCRUD
             runtime: nodejs6.10
             timeout: '3'
-            version: NAV27XY2rU2_clgblIbm9G4g8ssmZFj3
+            version: 2LsrO9Dz1.fX4mrVQ5N8H0AFN9KRyJ40
           '/DESCRIPTION/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/DESCRIPTIONCRUD-20190201164413.zip
             description: 'Handler for calls to resource path : /DESCRIPTION/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: Jhlk/swscDH/doKIlAOD3UfYuOzDjBZ4sqhzd6L8NBs=
+            hashcode: a+cQc4wwPNvLK++IjBJILiRXRpkd/3LxYWCF3k8HhQc=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.562+0000'
+            modified: '2019-02-02T00:47:36.666+0000'
             name: DESCRIPTIONCRUD
             runtime: nodejs6.10
             timeout: '3'
-            version: k3H1mdK3aFzGDxIIXJcqnkgvcZ5shJxY
+            version: t4fPeTax28DxllGHIxcVdKoYze5H06Tr
       MISC: !com.amazonaws.mobilehub.v0.API 
         attributes:
           name: MISC
@@ -80,52 +80,52 @@ features:
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: h4GpVSRTfyBrmgt2xQocnGj0GwHgTdz7iNoRwsHWnTQ=
+            hashcode: FteE+3uvjN1B32c6Lx3GjzcNRv/R9BuziI7kUnTaz4w=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.168+0000'
+            modified: '2019-02-02T00:47:41.507+0000'
             name: MISC
             runtime: nodejs6.10
             timeout: '3'
-            version: 0151slxKbZ5lAPX4TJuhz48iknj2P0J.
+            version: mWz0cGp6Yv.MnTEIRR6_0tbOZfB6ajZS
           '/ADMIN/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/MISC-20190201164413.zip
             description: 'Handler for calls to resource path : /items/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: h4GpVSRTfyBrmgt2xQocnGj0GwHgTdz7iNoRwsHWnTQ=
+            hashcode: FteE+3uvjN1B32c6Lx3GjzcNRv/R9BuziI7kUnTaz4w=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.168+0000'
+            modified: '2019-02-02T00:47:41.507+0000'
             name: MISC
             runtime: nodejs6.10
             timeout: '3'
-            version: rQB1b6sazm7TjfaMc9OZ6GHmVbPip3Z5
+            version: xEADGSuQaK9Nf29VKciqgyxAyBe7WdMR
           /items: !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/MISC-20190201164413.zip
             description: 'Handler for calls to resource path : /items/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: h4GpVSRTfyBrmgt2xQocnGj0GwHgTdz7iNoRwsHWnTQ=
+            hashcode: FteE+3uvjN1B32c6Lx3GjzcNRv/R9BuziI7kUnTaz4w=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.168+0000'
+            modified: '2019-02-02T00:47:41.507+0000'
             name: MISC
             runtime: nodejs6.10
             timeout: '3'
-            version: s0kNtzRjTgaTMP1wZ1rYnzsucRebXnEY
+            version: ua9FETzL7U_v_gxc.Qqk8n45fT3kh3Z6
           '/items/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/MISC-20190201164413.zip
             description: 'Handler for calls to resource path : /items/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: h4GpVSRTfyBrmgt2xQocnGj0GwHgTdz7iNoRwsHWnTQ=
+            hashcode: FteE+3uvjN1B32c6Lx3GjzcNRv/R9BuziI7kUnTaz4w=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.168+0000'
+            modified: '2019-02-02T00:47:41.507+0000'
             name: MISC
             runtime: nodejs6.10
             timeout: '3'
-            version: xoRYoSJdmOdl3jNorfNQTzMCnHzFnpjB
+            version: jh_OwcJjK1qS8h1aj9KHheyPmBMT_dwq
       PROJECTSCRUD: !com.amazonaws.mobilehub.v0.API 
         attributes:
           name: PROJECTSCRUD
@@ -138,26 +138,26 @@ features:
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: c7yUv8h5I6hOpkrtkPrBtTMX0wKfANUe006uKBTbO9o=
+            hashcode: TuRC9dAsy4rmZOpSBRNb35cEEeT11hzQzgWP14wjL7c=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.581+0000'
+            modified: '2019-02-02T00:47:35.208+0000'
             name: PROJECTS
             runtime: nodejs6.10
             timeout: '3'
-            version: klHYD2ROSo8Jm6PNqoRW7MEXAuRTK71W
+            version: T8o8LRf28qUdO99FRnBZfkRsQAW_tsuI
           '/PROJECTS/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/PROJECTS-20190201164413.zip
             description: 'Handler for calls to resource path : /PROJECTS/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: c7yUv8h5I6hOpkrtkPrBtTMX0wKfANUe006uKBTbO9o=
+            hashcode: TuRC9dAsy4rmZOpSBRNb35cEEeT11hzQzgWP14wjL7c=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.581+0000'
+            modified: '2019-02-02T00:47:35.208+0000'
             name: PROJECTS
             runtime: nodejs6.10
             timeout: '3'
-            version: GhwpFS3ao5fc1fB3E2RK36BDDHk2FNUm
+            version: MTIluzsDDyxUGNMeY8x2lhdd98JWPNCF
       UPLOAD: !com.amazonaws.mobilehub.v0.API 
         attributes:
           name: UPLOAD
@@ -170,39 +170,39 @@ features:
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: J6u1ByJq6H98GCFAEVfgPVz6SpfYsMWVfYxH5CVLVzc=
+            hashcode: mtp7VQkwp9xAOtXxuFHTN36ohNcr+8j+JfVcyCxNNv4=
             memorySize: '128'
-            modified: '2019-02-01T00:59:10.026+0000'
+            modified: '2019-02-02T00:47:38.191+0000'
             name: UPLOAD
             runtime: nodejs6.10
             timeout: '3'
-            version: 7iXM7ZkuZUYV_k44e0FK1d3GYXUPiPRP
+            version: DRhukzHDj1LGe63rLyiGkcHPaO.iUhdQ
           /uploads3: !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/UPLOAD-20190201164413.zip
             description: 'Handler for calls to resource path : /uploads3/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: J6u1ByJq6H98GCFAEVfgPVz6SpfYsMWVfYxH5CVLVzc=
+            hashcode: mtp7VQkwp9xAOtXxuFHTN36ohNcr+8j+JfVcyCxNNv4=
             memorySize: '128'
-            modified: '2019-02-01T00:59:10.026+0000'
+            modified: '2019-02-02T00:47:38.191+0000'
             name: UPLOAD
             runtime: nodejs6.10
             timeout: '3'
-            version: IMGBVjBBCwxQN5bO7mMmCqfdOuo0IEXd
+            version: 4wggULNm8uGeY.lGjzLwiyJV458iLD6v
           '/uploads3/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/UPLOAD-20190201164413.zip
             description: 'Handler for calls to resource path : /uploads3/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: J6u1ByJq6H98GCFAEVfgPVz6SpfYsMWVfYxH5CVLVzc=
+            hashcode: mtp7VQkwp9xAOtXxuFHTN36ohNcr+8j+JfVcyCxNNv4=
             memorySize: '128'
-            modified: '2019-02-01T00:59:10.026+0000'
+            modified: '2019-02-02T00:47:38.191+0000'
             name: UPLOAD
             runtime: nodejs6.10
             timeout: '3'
-            version: fJPsR1mGxSOp6f_b5dwEPeu7c3QUkKNh
+            version: gibUZOVg0edPZnm62UU9.KgsZdpYBEpD
       sampleCloudApi: !com.amazonaws.mobilehub.v0.API 
         attributes:
           name: sampleCloudApi
@@ -215,26 +215,26 @@ features:
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: ZJfFlMW08iOlNi18uKjH0nJtTkBKw8rv1CGgIZ/zSZY=
+            hashcode: Juf8yFsLXYMmYAPrRYXvlmXYlR5gZVM+WKLPjARfZ80=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.010+0000'
+            modified: '2019-02-02T00:47:36.315+0000'
             name: sampleLambda
             runtime: nodejs6.10
             timeout: '3'
-            version: XJCJrrBk9Uwt7e0dIq5o8V6icjmWHADs
+            version: mBup5uJaQPdC76EfPH43z5LYAOFoaqaJ
           '/items/{proxy+}': !com.amazonaws.mobilehub.v0.Function 
             codeFilename: uploads/sampleLambda-20190201164413.zip
             description: 'Handler for calls to resource path : /items/{proxy+}'
             enableCORS: true
             environment: {}
             handler: lambda.handler
-            hashcode: ZJfFlMW08iOlNi18uKjH0nJtTkBKw8rv1CGgIZ/zSZY=
+            hashcode: Juf8yFsLXYMmYAPrRYXvlmXYlR5gZVM+WKLPjARfZ80=
             memorySize: '128'
-            modified: '2019-02-01T00:59:11.010+0000'
+            modified: '2019-02-02T00:47:36.315+0000'
             name: sampleLambda
             runtime: nodejs6.10
             timeout: '3'
-            version: ZDhSeDxzfwXwkNkC8g0Q.y4KHY_F0ARS
+            version: .A.xdQjMZpoU7RcfTo_TZ9uxDsBYdNyR
   content-delivery: !com.amazonaws.mobilehub.v0.ContentDelivery 
     attributes:
       enabled: true
