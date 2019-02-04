@@ -1,3 +1,7 @@
-dependencies:
+version: 2.1
+jobs:
   pre:
-    - npm install -g awsmobile-cli
+    machine:
+      enabled: true
+      steps:
+        - install_awsmobile: npm install -g awsmobile-cli
