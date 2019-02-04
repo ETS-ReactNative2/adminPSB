@@ -4,4 +4,4 @@ jobs:
     machine:
       enabled: true
     steps:
-      - install_awsmobile: npm install -g awsmobile-cli
+      - run: npm install -g awsmobile-cli
