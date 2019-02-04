@@ -6,4 +6,6 @@ jobs:
     steps:
       - run: npm install -g awsmobile-cli
       - checkout
+      - run: ls -l
+      - run: pwd
       - run: awsmobile push
