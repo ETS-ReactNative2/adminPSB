@@ -5,8 +5,4 @@ jobs:
       enabled: true
     steps:
       - run: npm install -g awsmobile-cli
-  deploy:
-    machine:
-      enabled: true
-    steps:
       - run: awsmobile push
