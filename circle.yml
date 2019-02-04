@@ -5,4 +5,5 @@ jobs:
       enabled: true
     steps:
       - run: npm install -g awsmobile-cli
+      - checkout
       - run: awsmobile push
