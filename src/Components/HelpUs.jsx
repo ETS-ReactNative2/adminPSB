@@ -15,8 +15,13 @@ import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import {Alert} from 'react-bootstrap';
 import {Tabs, Tab, TabList, TabPanel} from 'react-tabs';
+import {postHelpUsDescription, postHelpUsMembers, postHelpUsCompanies}  from "../API/fetchApi";
 
 class HelpUs extends Component{
+
+    static propTypes = {
+        displayNotification: PropTypes.func
+    };
 
     constructor(props) {
         super(props);
@@ -64,22 +69,17 @@ class HelpUs extends Component{
     handleSubmitWelcome = (event) => {
         event.preventDefault();
         const welcomeText = draftToHtml(convertToRaw(this.props.welcomeEditorState.getCurrentContent()));
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body : {
-                'NAME':'WELCOME_TEXT',
-                'CONTENT': welcomeText
-            }
-        }
-        API.post('DESCRIPTIONCRUD','/DESCRIPTION', requestParams)
+        postHelpUsDescription(welcomeText)
         .then(data => {
             console.log(data);
             this.setState({
                 welcomeChanged: false
             });
+            this.props.displayNotification("success","Modification sauvegardée.");
         })
         .catch((error) => {
             console.log(error);
+            this.props.displayNotification("error","Erreur lors de la sauvegarde.");
         });
     };
 
@@ -87,22 +87,17 @@ class HelpUs extends Component{
     handleSubmitMembers = (event) => {
         event.preventDefault();
         const membersText = draftToHtml(convertToRaw(this.props.membersEditorState.getCurrentContent()));
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body : {
-                'NAME': 'MEMBERS_TEXT',
-                'CONTENT': membersText
-            }
-        }
-        API.post('DESCRIPTIONCRUD','/DESCRIPTION', requestParams)
+        postHelpUsMembers(membersText)
         .then(data => {
             console.log(data);
             this.setState({
                 membersChanged: false
             });
+            this.props.displayNotification("success","Modification sauvegardée.");
         })
         .catch((error) => {
             console.log(error);
+            this.props.displayNotification("error","Erreur lors de la sauvegarde.");
         });
     };
 
@@ -110,22 +105,17 @@ class HelpUs extends Component{
     handleSubmitCompanies = (event) => {
         event.preventDefault();
         const companiesText = draftToHtml(convertToRaw(this.props.companiesEditorState.getCurrentContent()));
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body : {
-                'NAME': 'COMPANIES_TEXT',
-                'CONTENT': companiesText
-            }
-        }
-        API.post('DESCRIPTIONCRUD','/DESCRIPTION', requestParams)
+        postHelpUsCompanies(companiesText)
         .then(data => {
             console.log(data);
             this.setState({
                 companiesChanged: false
             });
+            this.props.displayNotification("success","Modification sauvegardée.");
         })
         .catch((error) => {
             console.log(error);
+            this.props.displayNotification("error","Erreur lors de la sauvegarde.");
         });
     };
 

@@ -4,26 +4,13 @@ import './../css/form.css';
 import './../css/editor.css';
 import axios from 'axios';
 import {API} from 'aws-amplify';
+import {postFile, getSignedUrlToPostFile} from '../API/fetchApi';
 
 function uploadImageCallBack(file) {
-    let requestParams = {
-        headers: {'content-type': 'application/json'},
-        body: {
-            'filename': file.name,
-            'filetype': file.type
-        }
-    };
-    return API.post('UPLOAD','/getSignedUrl', requestParams)
+    getSignedUrlToPostFile(file)
     .then(function (result) {
         var signedUrl = result.data.signedUrl;
-        
-        var options = {
-            headers: {
-                'Content-Type': file.type
-            }
-        };
-
-        return axios.put(signedUrl, file, options);
+        return postFile(file, signedUrl);
     })
     .then(function (result) {
         console.log(result);

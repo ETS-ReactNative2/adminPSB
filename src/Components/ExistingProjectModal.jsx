@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Label, List } from 'semantic-ui-react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup.js';
-import {API} from 'aws-amplify';
 import './../css/api.css';
 import {Editor} from 'react-draft-wysiwyg';
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
@@ -11,14 +10,13 @@ import draftToHtml from 'draftjs-to-html';
 import {editProject} from '../actions/index.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import {putProject, postLastUpdatedDate} from '../API/fetchApi';
 
 class ExistingProjectModal extends Component {
 
     static propTypes = {
         selectedProjectId: PropTypes.number.isRequired,
-        hasError: PropTypes.func.isRequired
+        displayNotification: PropTypes.func
     };
 
     constructor(props) {
@@ -40,7 +38,7 @@ class ExistingProjectModal extends Component {
         this.fetchProjectDetails();
     }
 
-    //Fetch project details from server side
+    //Get project details redux
     fetchProjectDetails = () => {
         this.props.projects.map((project)=> {
             if(project.id == this.props.selectedProjectId){
@@ -69,63 +67,21 @@ class ExistingProjectModal extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         const id = this.props.selectedProjectId;
-        const name = this.state.name;
         const description = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
-        const startDate = this.state.startDate;
-        const endDate = this.state.endDate;
-        const coverImage = this.state.coverImage;
-        const category = this.state.category;
-        const location = this.state.location;
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body : {
-                'ID': id,
-                'NAME': name,
-                'DESCRIPTION': description,
-                'START_DATE': startDate,
-                'END_DATE': endDate,
-                'CATEGORY': category,
-                'COVER_IMG': coverImage,
-                'LOCATION' : location
-            }
-        }
-        API.post('PROJECTSCRUD','/PROJECTS', requestParams)
+        const {name, startDate, endDate, coverImage, category, location} = this.state;
+        postProject(id, name, description, startDate, category, coverImage, location)
         .then(data => {
             console.log(data);
             this.props.editProject(id,name,description,startDate, coverImage, category, endDate, location);
-            this.props.hasError(false);
-            this.updateLastUpdatedDate();
+            this.props.displayNotification(true,"Projet mis à jour.");
+            updateLastUpdatedDate();
         })
         .catch((error) => {
             console.log(error);
-            this.props.hasError(true);
+            this.props.displayNotification(false,"Erreur lors de la mise à jour.");
         });
         this.switchEditMode();
     };
-
-    updateLastUpdatedDate = () => {
-        let d = new Date();
-        const year = d.getFullYear().toString();
-        const month = (d.getMonth()+1).toString().length==2?(d.getMonth()+1):"0"+(d.getMonth()+1).toString();
-        const day = d.getDate().toString()==2?d.getDate().toString(): "0"+d.getDate().toString();
-        const hours = d.getHours().toString().length==2?d.getHours().toString():"0"+d.getHours().toString();
-        const mn = (parseInt(d.getMinutes()/5)*5).toString().length==2?(parseInt(d.getMinutes()/5)*5).toString():"0"+(parseInt(d.getMinutes()/5)*5).toString();
-        let currentDate = day+"/"+month+"/"+year+", à"+hours+"h"+mn;
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body : {
-                'NAME': 'LAST_UPDATED_DATE',
-                'VALUE': currentDate
-            }
-        }
-        API.post('MISC','/ADMIN', requestParams)
-        .then(data => {
-            console.log(data);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    }
 
     //Update project value after user while the user is filling the form
     handleChange = (event) => {

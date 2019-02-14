@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup.js';
-import {API} from 'aws-amplify';
 import './css/general.css';
 import { connect } from 'react-redux';
+import {getLastUpdatedDate} from './API/fetchApi';
 
 class Home extends Component{
 
@@ -19,7 +18,7 @@ class Home extends Component{
     
     //Fetch the last updated date from server 
     fetchLastUpdateDate = async () => {
-    API.get('MISC','/ADMIN/LAST_UPDATED_DATE')
+        getLastUpdatedDate()
         .then(data => {
             console.log(data);
             const lastUpdatedDate = data[0].VALUE;

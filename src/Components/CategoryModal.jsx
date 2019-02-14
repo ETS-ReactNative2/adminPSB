@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {API} from 'aws-amplify';
 import { Button} from 'semantic-ui-react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {addCategory} from '../actions/index.js';
 import './../css/api.css';
-import { toast } from 'react-toastify';
+import {postCategory} from '../API/fetchApi';
+import {hasNoDuplicateForColumnName} from '../API/generalApi';
 
 
 class CategoryModal extends React.Component {
@@ -15,7 +15,7 @@ class CategoryModal extends React.Component {
         onClose: PropTypes.func.isRequired,
         show: PropTypes.bool,
         children: PropTypes.node,
-        hasError: PropTypes.func.isRequired
+        displayNotification: PropTypes.func
     };
 
     constructor(props) {
@@ -24,31 +24,24 @@ class CategoryModal extends React.Component {
             name: "",
             date: new Date()
         };
-        this.handleSubmit = this.handleSubmit.bind(this);
       }
 
 
       //Create a new category on server side
-      handleSubmit(event) {
+      handleSubmit = (event) => {
         event.preventDefault();
         const categoryName = this.state.name;
         
         if(this.hasNoDuplicate(categoryName)){
-            let requestParams = {
-                headers: {'content-type': 'application/json'},
-                body : {
-                    'NAME': categoryName
-                }
-            }
-            API.post('CATEGORIESCRUD','/CATEGORIES', requestParams)
+            postCategory(categoryName)
             .then(data => {
                 console.log(data);
                 this.props.addCategory(categoryName);
-                this.props.hasError(false);
+                this.props.displayNotification("success","Catégorie ajoutée.");
             })
             .catch((error) => {
                 console.log(error);
-                this.props.hasError(true);
+                this.props.displayNotification("error","Erreur lors de l'ajout.");
             });
             this.props.onClose();
         }
@@ -56,17 +49,11 @@ class CategoryModal extends React.Component {
 
     //Check if there is a category with the name chosen by the user already exist
     hasNoDuplicate = (categoryName) => {
-        let result = true;
-        this.props.data.map((cat) => {
-            if(cat.name === categoryName){
-                toast.info(
-                    <div style ={{textAlign:'center'}}>
-                        Cette catégorie existe déjà
-                    </div>
-                );
-                result = false;
-            }
-        })
+        const {categories} = this.props;
+        const result = hasNoDuplicateForColumnName(categoryName, categories);
+        if(!result){
+            this.props.displayNotification("info","Cette catégorie existe déjà.");
+        }
         return result;
     }
 
@@ -116,10 +103,16 @@ class CategoryModal extends React.Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return {
+        categories: state.categories
+    }
+}
+
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({addCategory}, dispatch);
 }
 
-export default connect(null,mapDispatchToProps)(CategoryModal);
+export default connect(mapStateToProps,mapDispatchToProps)(CategoryModal);
 
   

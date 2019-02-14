@@ -6,18 +6,21 @@ import ReactDOM from 'react-dom';
 import {Editor} from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import { EditorState, convertToRaw} from 'draft-js';
-import axios from 'axios';
-import {API} from 'aws-amplify';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {addProject} from '../actions/index.js';
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { toast } from 'react-toastify';
+import {hasNoDuplicateForColumnName} from '../API/generalApi';
+import {postFile, getSignedUrlToPostFile, postProject} from '../API/fetchApi';
 
 const PREFIX = 'https://s3-eu-west-2.amazonaws.com/psb-users/';
 
 class NewProjectModal extends Component{
 
+    static propTypes = {
+        displayNotification: PropTypes.func,
+        onClose: PropTypes.func.isRequired
+    };
 
     constructor(props) {
         super(props);
@@ -33,43 +36,22 @@ class NewProjectModal extends Component{
         };
     }
 
-    static propTypes = {
-        onClose: PropTypes.func.isRequired,
-        hasError: PropTypes.func.isRequired
-    }
-
     //Post new project to server
     handleSubmit = (event) => {
         event.preventDefault();
         const id= Date.now();
-        const name = this.state.name;
+        const {startDate, coverImage, category, location, name} = this.state;
         if(this.hasNoDuplicate(name)){
             const description = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
-            const startDate = this.state.startDate;
-            const coverImage = this.state.coverImage;
-            const category = this.state.category;
-            const location = this.state.location;
-            let requestParams = {
-                headers: {'content-type': 'application/json'},
-                body : {
-                    'ID': id,
-                    'NAME': name,
-                    'DESCRIPTION': description,
-                    'START_DATE': startDate,
-                    'CATEGORY': category,
-                    'COVER_IMG': coverImage,
-                    'LOCATION' : location
-                }
-            }
-            API.post('PROJECTSCRUD','/PROJECTS', requestParams)
+            postProject(id,name, description, startDate, category, coverImage, location)
             .then(data => {
                 console.log(data);
                 this.props.addProject(id,name,description,startDate, coverImage, category, null, location);
-                this.props.hasError(false);
+                this.props.displayNotification("success","Projet ajouté.");
             })
             .catch((error) => {
                 console.log(error);
-                this.props.hasError(true);
+                this.props.displayNotification("error","Erreur lors de l'ajout.");
             });
             this.props.onClose();
         }
@@ -77,17 +59,11 @@ class NewProjectModal extends Component{
 
     //Check if there is a project with the name chosen by the user already exist
     hasNoDuplicate = (projectName) => {
-        let result = true;
-        this.props.data.map((project) => {
-            if(project.name === projectName){
-                toast.info(
-                    <div style ={{textAlign:'center'}}>
-                        Un projet avec ce nom existe déjà
-                    </div>
-                );
-                result = false;
-            }
-        })
+        let {projects} = this.props;
+        const result = hasNoDuplicateForColumnName(projectName, projects);
+        if(!result){
+            this.props.displayNotification("info","Un projet avec ce nom existe déjà.");
+        }
         return result;
     }
 
@@ -122,24 +98,10 @@ class NewProjectModal extends Component{
     handleFile= (event) => {
         const file = event.target.files[0];
         let currentComponent = this;
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body: {
-                'filename': file.name,
-                'filetype': file.type
-            }
-        };
-        API.post('UPLOAD','/getSignedUrl', requestParams)
+        getSignedUrlToPostFile(file)
         .then(function (result) {
             var signedUrl = result.data.signedUrl;
-            
-            var options = {
-                headers: {
-                    'Content-Type': file.type
-                }
-            };
-    
-            return axios.put(signedUrl, file, options);
+            return postFile(file, signedUrl);
         })
         .then(function (result) {
             console.log(result);
@@ -150,30 +112,17 @@ class NewProjectModal extends Component{
             }
         })
         .catch(function (err) {
+            currentComponent.props.displayNotification("error","Erreur lors de l'ajout de la photo.");
             console.log(err);
         });
     }
 
-    //Upload from server a file
+    //Put a new file to server side
     uploadImageCallBack(file) {
-        let requestParams = {
-            headers: {'content-type': 'application/json'},
-            body: {
-                'filename': file.name,
-                'filetype': file.type
-            }
-        };
-        return API.post('UPLOAD','/getSignedUrl', requestParams)
+        getSignedUrlToPostFile(file)
         .then(function (result) {
             var signedUrl = result.data.signedUrl;
-            
-            var options = {
-                headers: {
-                    'Content-Type': file.type
-                }
-            };
-    
-            return axios.put(signedUrl, file, options);
+            return postFile(file, signedUrl);
         })
         .then(response => {
             return {
@@ -199,8 +148,7 @@ class NewProjectModal extends Component{
             minHeight: 200
         }
 
-        const {editorState} = this.state;
-        const {name, description, startDate, category} = this.state;
+        const {name, description, startDate, category, editorState, coverImage} = this.state;
         const errors = this.validate(name, startDate, category, location);
         const isEnabled = !Object.keys(errors).some(x => errors[x]);
 
@@ -215,7 +163,7 @@ class NewProjectModal extends Component{
                     rows="1" 
                     type="text" 
                     className={errors.name?"error":""} 
-                    value={this.state.name} 
+                    value={name} 
                     onChange={this.handleChange}
                 />
                 <br />
@@ -223,7 +171,7 @@ class NewProjectModal extends Component{
                 <select 
                     name="category" 
                     className={errors.category?"error":""} 
-                    value={this.state.category} 
+                    value={category} 
                     onChange={this.handleChange}>
                         {this.props.categories.map(item => (
                             <option key={item.name} value={item.name}>
@@ -240,9 +188,9 @@ class NewProjectModal extends Component{
                     type="file" 
                     onChange={this.handleFile}
                 />
-                {this.state.coverImage!=''?
+                {coverImage!=''?
                     <div >
-                        <img className="imgPreview" src={this.state.coverImage}/>
+                        <img className="imgPreview" src={coverImage}/>
                     </div>
                     : null
                 }
@@ -255,7 +203,7 @@ class NewProjectModal extends Component{
                     style={{width: 150}} 
                     row="1" 
                     className={errors.startDate?"error":""} 
-                    type="date" value={this.state.startDate} 
+                    type="date" value={startDate} 
                     onChange={this.handleChange} />
                 <br />
                 <label>Lieu
@@ -266,7 +214,7 @@ class NewProjectModal extends Component{
                     row="1" 
                     className={errors.location?"error":""} t
                     type="text" 
-                    value={this.state.location} 
+                    value={location} 
                     onChange={this.handleChange} />
                 <br />
                 <div className="editor-style">
@@ -296,7 +244,8 @@ class NewProjectModal extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        categories: state.categories
+        categories: state.categories,
+        projects: state.projects
     }
 }
 
