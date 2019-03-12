@@ -1,35 +1,10 @@
 import React, { Component } from 'react';
 import './css/general.css';
 import { connect } from 'react-redux';
-import {getLastUpdatedDate} from './API/fetchApi';
+
+import {FormattedMessage} from 'react-intl';
 
 class Home extends Component{
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            lastUpdatedDate: ""
-        };
-    }
-
-    componentDidMount() {
-        this.fetchLastUpdateDate();
-    }
-    
-    //Fetch the last updated date from server 
-    fetchLastUpdateDate = async () => {
-        getLastUpdatedDate()
-        .then(data => {
-            console.log(data);
-            const lastUpdatedDate = data[0].VALUE;
-            if(lastUpdatedDate){
-                this.setState({
-                    lastUpdatedDate : lastUpdatedDate
-                })
-            }
-        })
-        .catch ( err => console.log(err))
-    }
 
     render() {
         return (
@@ -38,17 +13,42 @@ class Home extends Component{
                 Bienvenue sur l'interface administrateur pour l'appli PSB
                 <div 
                     className="next-paragraph">
-                    Il y a actuellement :
+                    <FormattedMessage
+                    id="Home.thereIs"
+                    defaultMessage="Il y a actuellement :"
+                    />
                     <ul
                     style={{marginLeft:20}}
                     >
-                        <li>- {this.props.categories.length} categories</li>
-                        <li>- {this.props.projects.length} projets en cours</li>
+                        <li>- {}
+                            <FormattedMessage
+                                id='Home.categories'
+                                defaultMessage={'{total} catégories'}
+                                values={{
+                                    total:this.props.categories.length
+                                }}
+                            />
+                        </li>
+                        <li>- {}
+                            <FormattedMessage
+                                id="Home.currentProjects"
+                                defaultMessage={'{total} projets en cours'}
+                                values={{
+                                    total:this.props.projects.length
+                                }}
+                            />
+                        </li>
                     </ul>
                 </div>
                 <div
                     className="next-paragraph">
-                    Dernière mise à jour : le {this.state.lastUpdatedDate}
+                    <FormattedMessage
+                        id="Home.lastUpdate"
+                        defaultMessage='Dernière mise à jour : le {lastUpdate}'
+                        values={{
+                            lastUpdate:this.props.lastUpdatedDate
+                        }}
+                    />
                 </div>
             </div>
 
@@ -59,7 +59,8 @@ class Home extends Component{
 const mapStateToProps = (state) => {
     return {
         categories: state.categories,
-        projects: state.projects
+        projects: state.projects,
+        lastUpdatedDate: state.utilities.lastUpdatedDate
     }
 }
 

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "Categories.categoryAddedWithSuccess",
+    "defaultMessage": "Catégorie ajoutée."
+  },
+  {
+    "id": "Categories.errorWhileAddingCategory",
+    "defaultMessage": "Erreur lors de l'ajout."
+  },
+  {
+    "id": "Categories.duplicateCategory",
+    "defaultMessage": "Cette catégorie existe déjà."
+  },
+  {
+    "id": "Categories.newCategoryCreation",
+    "defaultMessage": "Création d'une nouvelle catégorie"
+  }
+]

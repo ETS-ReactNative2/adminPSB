@@ -1,0 +1,50 @@
+[
+  {
+    "id": "HelpUs.welcomeTextUpdatedWithSuccess",
+    "defaultMessage": "Modification sauvegardée."
+  },
+  {
+    "id": "HelpUs.errorWhileUpdatingWelcomeText",
+    "defaultMessage": "Erreur lors de la sauvegarde."
+  },
+  {
+    "id": "HelpUs.membersTextUpdatedWithSuccess",
+    "defaultMessage": "Modification sauvegardée."
+  },
+  {
+    "id": "HelpUs.errorWhileUpdatingMembersText",
+    "defaultMessage": "Erreur lors de la sauvegarde."
+  },
+  {
+    "id": "HelpUs.companiesTextUpdatedWithSuccess",
+    "defaultMessage": "Modification sauvegardée."
+  },
+  {
+    "id": "HelpUs.errorWhileUpdatingCompaniesText",
+    "defaultMessage": "Erreur lors de la sauvegarde."
+  },
+  {
+    "id": "HelpUs.accueil",
+    "defaultMessage": "Accueil"
+  },
+  {
+    "id": "HelpUs.becomeAMember",
+    "defaultMessage": "Devenir membre"
+  },
+  {
+    "id": "HelpUs.companies",
+    "defaultMessage": "Espace entreprises"
+  },
+  {
+    "id": "HelpUs.saveWelcomeText",
+    "defaultMessage": "Sauvegarder"
+  },
+  {
+    "id": "HelpUs.saveMembersText",
+    "defaultMessage": "Sauvegarder"
+  },
+  {
+    "id": "HelpUs.saveCompaniesText",
+    "defaultMessage": "Sauvegarder"
+  }
+]

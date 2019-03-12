@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import * as Constants from '../Globals/Constants';
 
 export default class Modal extends Component{
     
@@ -7,7 +8,7 @@ export default class Modal extends Component{
         onClose: PropTypes.func.isRequired,
         show: PropTypes.bool,
         children: PropTypes.node,
-        title: PropTypes.string.isRequired
+        title: PropTypes.node.isRequired
     };
 
     constructor(props) {
@@ -43,7 +44,7 @@ export default class Modal extends Component{
             <div style={modalStyle}>
                 <div style={{backgroundColor: "#D3D3D3", height: 60, padding: "20px"}}>
                     <div>
-                        <img src={require('../Images/closeIcon2.png')} 
+                        <img src={Constants.CLOSE_ICON2_PATH} 
                             onClick={() => {this.props.onClose();}}
                             style={{float:"right", cursor: 'pointer',}}
                             width="16" 

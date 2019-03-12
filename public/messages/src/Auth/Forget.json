@@ -1,0 +1,46 @@
+[
+  {
+    "id": "Forget.passwordDontMatch",
+    "defaultMessage": "Les mots de passe ne correspondent pas"
+  },
+  {
+    "id": "Forget.incorrectLogin",
+    "defaultMessage": "Merci de saisir un identifiant correct"
+  },
+  {
+    "id": "Forget.verificationCodeCantBeEmpty",
+    "defaultMessage": "Le code de vérification ne peut être vide"
+  },
+  {
+    "id": "Forget.login",
+    "defaultMessage": "Identifiant"
+  },
+  {
+    "id": "Forget.password",
+    "defaultMessage": "Mot de passe"
+  },
+  {
+    "id": "Forget.verificationCode",
+    "defaultMessage": "Code de vérification"
+  },
+  {
+    "id": "Forget.reinitPassword",
+    "defaultMessage": "Réinitialiser le mot de passe"
+  },
+  {
+    "id": "Forget.send",
+    "defaultMessage": "Envoyer"
+  },
+  {
+    "id": "Forget.sendVerificationCode",
+    "defaultMessage": "Envoyer le code de vérification"
+  },
+  {
+    "id": "Forget.waitingConfirmation",
+    "defaultMessage": "En attente d'envoi"
+  },
+  {
+    "id": "Forget.sendAgain",
+    "defaultMessage": "Envoyer à nouveau!"
+  }
+]

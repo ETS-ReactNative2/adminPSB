@@ -16,6 +16,7 @@ import axios from 'axios';
 import {Alert} from 'react-bootstrap';
 import {Tabs, Tab, TabList, TabPanel} from 'react-tabs';
 import {postHelpUsDescription, postHelpUsMembers, postHelpUsCompanies}  from "../API/fetchApi";
+import {FormattedMessage, defineMessages} from 'react-intl';
 
 class HelpUs extends Component{
 
@@ -69,17 +70,27 @@ class HelpUs extends Component{
     handleSubmitWelcome = (event) => {
         event.preventDefault();
         const welcomeText = draftToHtml(convertToRaw(this.props.welcomeEditorState.getCurrentContent()));
+        const messages = defineMessages({
+            successMessage: {
+              id: "HelpUs.welcomeTextUpdatedWithSuccess",
+              defaultMessage: "Modification sauvegardée.",
+            },
+            errorMessage: {
+                id: "HelpUs.errorWhileUpdatingWelcomeText",
+                defaultMessage: "Erreur lors de la sauvegarde.",
+              },
+          });
         postHelpUsDescription(welcomeText)
         .then(data => {
             console.log(data);
             this.setState({
                 welcomeChanged: false
             });
-            this.props.displayNotification("success","Modification sauvegardée.");
+            this.props.displayNotification("success",messages.successMessage);
         })
         .catch((error) => {
             console.log(error);
-            this.props.displayNotification("error","Erreur lors de la sauvegarde.");
+            this.props.displayNotification("error",messages.errorMessage);
         });
     };
 
@@ -87,17 +98,27 @@ class HelpUs extends Component{
     handleSubmitMembers = (event) => {
         event.preventDefault();
         const membersText = draftToHtml(convertToRaw(this.props.membersEditorState.getCurrentContent()));
+        const messages = defineMessages({
+            successMessage: {
+              id: "HelpUs.membersTextUpdatedWithSuccess",
+              defaultMessage: "Modification sauvegardée.",
+            },
+            errorMessage: {
+                id: "HelpUs.errorWhileUpdatingMembersText",
+                defaultMessage: "Erreur lors de la sauvegarde.",
+              },
+          });
         postHelpUsMembers(membersText)
         .then(data => {
             console.log(data);
             this.setState({
                 membersChanged: false
             });
-            this.props.displayNotification("success","Modification sauvegardée.");
+            this.props.displayNotification("success",messages.successMessage);
         })
         .catch((error) => {
             console.log(error);
-            this.props.displayNotification("error","Erreur lors de la sauvegarde.");
+            this.props.displayNotification("error",messages.errorMessage);
         });
     };
 
@@ -105,17 +126,27 @@ class HelpUs extends Component{
     handleSubmitCompanies = (event) => {
         event.preventDefault();
         const companiesText = draftToHtml(convertToRaw(this.props.companiesEditorState.getCurrentContent()));
+        const messages = defineMessages({
+            successMessage: {
+              id: "HelpUs.companiesTextUpdatedWithSuccess",
+              defaultMessage: "Modification sauvegardée.",
+            },
+            errorMessage: {
+                id: "HelpUs.errorWhileUpdatingCompaniesText",
+                defaultMessage: "Erreur lors de la sauvegarde.",
+              },
+          });
         postHelpUsCompanies(companiesText)
         .then(data => {
             console.log(data);
             this.setState({
                 companiesChanged: false
             });
-            this.props.displayNotification("success","Modification sauvegardée.");
+            this.props.displayNotification("success",messages.successMessage);
         })
         .catch((error) => {
             console.log(error);
-            this.props.displayNotification("error","Erreur lors de la sauvegarde.");
+            this.props.displayNotification("error",messages.errorMessage);
         });
     };
 
@@ -124,9 +155,24 @@ class HelpUs extends Component{
             <div style={{width: '100%'}}> 
                 <Tabs>
                     <TabList>
-                        <Tab style={{marginLeft: '30px'}}> Accueil </Tab>
-                        <Tab> Devenir membre </Tab>
-                        <Tab> Espace entreprises </Tab>
+                        <Tab style={{marginLeft: '30px'}}> 
+                            <FormattedMessage
+                                id="HelpUs.accueil"
+                                defaultMessage="Accueil"
+                            />
+                        </Tab>
+                        <Tab>  
+                            <FormattedMessage
+                                id="HelpUs.becomeAMember"
+                                defaultMessage="Devenir membre"
+                            />
+                        </Tab>
+                        <Tab>  
+                            <FormattedMessage
+                                id="HelpUs.companies"
+                                defaultMessage="Espace entreprises"
+                            />
+                        </Tab>
                     </TabList>
                     <TabPanel className="tab-panel-style">
                         <form onSubmit={this.handleSubmitWelcome}>
@@ -147,7 +193,10 @@ class HelpUs extends Component{
                                 />
                             </div>
                             {this.state.welcomeChanged?<button className='saveData'>
-                                Sauvegarder
+                                <FormattedMessage
+                                    id="HelpUs.saveWelcomeText"
+                                    defaultMessage="Sauvegarder"
+                                />
                             </button>:null}
                         </form>
                     </TabPanel>
@@ -170,7 +219,10 @@ class HelpUs extends Component{
                                 />
                             </div>
                             {this.state.membersChanged?<button className='saveData'>
-                                Sauvegarder
+                                <FormattedMessage
+                                    id="HelpUs.saveMembersText"
+                                    defaultMessage="Sauvegarder"
+                                />
                             </button>:null}
                         </form>
                     </TabPanel>
@@ -193,7 +245,10 @@ class HelpUs extends Component{
                                 />
                             </div>
                             {this.state.companiesChanged?<button className='saveData'>
-                                Sauvegarder
+                                <FormattedMessage
+                                    id="HelpUs.saveCompaniesText"
+                                    defaultMessage="Sauvegarder"
+                                />
                             </button>:null}
                         </form>
                     </TabPanel>

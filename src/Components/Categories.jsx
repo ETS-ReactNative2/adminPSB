@@ -9,6 +9,7 @@ import CategoryModal from './CategoryModal';
 import {deleteCategory} from '../actions/index.js';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import {defineMessages} from 'react-intl';
 
 class Categories extends Component {
 
@@ -61,6 +62,12 @@ class Categories extends Component {
     
     render(){
         const {categories} = this.props;
+        const messages = defineMessages({
+            deleteCategoryMessage: {
+              id: "Categories.deleteCategoryConfirmation",
+              defaultMessage: "Tu veux vraiment supprimer cette catégorie ?",
+            },
+          });
         return (
             <CSSTransitionGroup
                 transitionName="sample-app"
@@ -96,7 +103,7 @@ class Categories extends Component {
                                         <Table.Cell textAlign='center'>
                                                 <img src={require('../Images/closeIcon.png')} 
                                                 className="linked-img"
-                                                onClick={() => {if(window.confirm("Tu veux vraiment supprimer cette catégorie ?")) this.deleteCategory(categorie.name)}}
+                                                onClick={() => {if(window.confirm(messages.deleteCategoryMessage)) this.deleteCategory(categorie.name)}}
                                                 width="16" 
                                                 height="16" />
                                         </Table.Cell>

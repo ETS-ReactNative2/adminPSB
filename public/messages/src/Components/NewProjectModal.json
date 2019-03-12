@@ -1,0 +1,42 @@
+[
+  {
+    "id": "Projects.projectAddedWithSuccess",
+    "defaultMessage": "Projet ajouté."
+  },
+  {
+    "id": "Projects.errorWhileAddingProject",
+    "defaultMessage": "Erreur lors de l'ajout."
+  },
+  {
+    "id": "Projects.duplicateProject",
+    "defaultMessage": "Un projet avec ce nom existe déjà."
+  },
+  {
+    "id": "Projects.errorWhileUpdatingPicture",
+    "defaultMessage": "Erreur lors de l'ajout de la photo."
+  },
+  {
+    "id": "Projects.newName",
+    "defaultMessage": "Nom"
+  },
+  {
+    "id": "Projects.newCategory",
+    "defaultMessage": "Catégorie"
+  },
+  {
+    "id": "Projects.newPicture",
+    "defaultMessage": "Image de présentation"
+  },
+  {
+    "id": "Projects.newStart",
+    "defaultMessage": "Date de lancement"
+  },
+  {
+    "id": "Projects.newLocation",
+    "defaultMessage": "Lieu"
+  },
+  {
+    "id": "Projects.create",
+    "defaultMessage": "Créer"
+  }
+]

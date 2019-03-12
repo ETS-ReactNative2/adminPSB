@@ -88,7 +88,7 @@ export function postLastUpdatedDate(){
     const day = d.getDate().toString()==2?d.getDate().toString(): "0"+d.getDate().toString();
     const hours = d.getHours().toString().length==2?d.getHours().toString():"0"+d.getHours().toString();
     const mn = (parseInt(d.getMinutes()/5)*5).toString().length==2?(parseInt(d.getMinutes()/5)*5).toString():"0"+(parseInt(d.getMinutes()/5)*5).toString();
-    let currentDate = day+"/"+month+"/"+year+", à"+hours+"h"+mn;
+    let currentDate = day+"/"+month+"/"+year+", à "+hours+"h"+mn;
     let requestParams = {
         headers: {'content-type': 'application/json'},
         body : {

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "Projects.projectUpdatedWithSuccess",
+    "defaultMessage": "Projet mis à jour."
+  },
+  {
+    "id": "Projects.errorWhileUpdatingProject",
+    "defaultMessage": "Erreur lors de la mise à jour."
+  }
+]

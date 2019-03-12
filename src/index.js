@@ -20,11 +20,18 @@ import './css/general.css';
 import {Provider} from 'react-redux';
 import {createStore} from 'redux';
 import rootReducer from './reducers/index.js';
+import {IntlProvider, addLocaleData} from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import fr from 'react-intl/locale-data/fr';
+import localeData from "./../public/locales/data.json";
+
  
 Amplify.configure(awsmobile);
 
 require('file-loader?name=[name].[ext]!./index.html');
 require("babel-polyfill");
+
+addLocaleData([...en, ...fr]);
 
 const PublicRoute = ({ component: Component, authStatus, ...rest}) => (
     <Route {...rest} render={props => authStatus == false
@@ -39,6 +46,21 @@ const PrivateRoute = ({ component: Component, authStatus, ...rest}) => (
 )
 
 const store = createStore(rootReducer);
+
+// Define user's language
+const language =
+(navigator.languages && navigator.languages[0]) ||
+navigator.language ||
+navigator.userLanguage;
+
+// Split locales with a region code
+const languageWithoutRegionCode = language.toLowerCase().split(/[_-]+/)[0];
+
+// Try full locale, try locale without region code, fallback to 'en'
+const messages =
+localeData[languageWithoutRegionCode] ||
+localeData[language] ||
+localeData.en;
 
 export default class AppRoute extends Component {
 
@@ -104,7 +126,9 @@ export default class AppRoute extends Component {
 }
 
 ReactDOM.render(
-<Provider store ={store}>
-    <AppRoute /> 
-</Provider>, 
+<IntlProvider locale={language} messages={messages}>
+    <Provider store ={store}>
+        <AppRoute /> 
+    </Provider>
+</IntlProvider>, 
 document.getElementById('root'));

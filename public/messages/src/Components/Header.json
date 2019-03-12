@@ -1,0 +1,26 @@
+[
+  {
+    "id": "Header.accueil",
+    "defaultMessage": "Accueil"
+  },
+  {
+    "id": "Header.categories",
+    "defaultMessage": "Catégories"
+  },
+  {
+    "id": "Header.projects",
+    "defaultMessage": "Projets"
+  },
+  {
+    "id": "Header.helpus",
+    "defaultMessage": "Nous aider"
+  },
+  {
+    "id": "Header.logout",
+    "defaultMessage": "Se déconnecter"
+  },
+  {
+    "id": "Header.title",
+    "defaultMessage": "Interface admin pour PSB App"
+  }
+]

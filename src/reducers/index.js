@@ -41,6 +41,17 @@ function categories(state = [], action){
     }
 }
 
+function utilities(state = [], action){
+    switch(action.type){
+        case 'UPDATE_LAST_UPDATED_DATE':
+            return Object.assign({}, state, {
+                lastUpdatedDate: action.lastUpdatedDate
+            })
+        default:
+            return state
+    }
+}
+
 function projects(state = [], action){
     switch(action.type){
         case 'ADD_PROJECT':
@@ -86,5 +97,6 @@ function projects(state = [], action){
 export default combineReducers({
     categories,
     projects,
+    utilities,
     helpUs
 })

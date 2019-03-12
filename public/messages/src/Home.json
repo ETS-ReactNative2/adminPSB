@@ -1,0 +1,18 @@
+[
+  {
+    "id": "Home.thereIs",
+    "defaultMessage": "Il y a actuellement :"
+  },
+  {
+    "id": "Home.categories",
+    "defaultMessage": "{total} catégories"
+  },
+  {
+    "id": "Home.currentProjects",
+    "defaultMessage": "{total} projets en cours"
+  },
+  {
+    "id": "Home.lastUpdate",
+    "defaultMessage": "Dernière mise à jour : le {lastUpdate}"
+  }
+]

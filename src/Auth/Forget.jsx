@@ -11,6 +11,8 @@ import { Redirect } from 'react-router-dom';
 import { Button, Input, Form, Label } from 'semantic-ui-react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import {Auth} from 'aws-amplify';
+import * as Constants from '../Globals/Constants';
+import {FormattedMessage, defineMessages} from 'react-intl';
 
 export default class Forget extends Component {
 
@@ -33,8 +35,14 @@ export default class Forget extends Component {
 
     handlePasswordMatchChange = (e) => {
         e.preventDefault();
+        const messages = defineMessages({
+            errornMessage: {
+              id: "Forget.passwordDontMatch",
+              defaultMessage: "Les mots de passe ne correspondent pas"
+            },
+          });
         const value = e.target.value;
-        const message = this.checkPasswordMatch(value, this.state.password) ? '' : 'Les mots de passe ne correspondent pas';
+        const message = this.checkPasswordMatch(value, this.state.password) ? '' : messages.errornMessage;
         this.setState(() => {
             return {
                 passwordMatch: value,
@@ -50,11 +58,17 @@ export default class Forget extends Component {
 
     sendVerificationCode = async (e) => {
         e.preventDefault();
+        const messages = defineMessages({
+            errornMessage: {
+              id: "Forget.incorrectLogin",
+              defaultMessage: "Merci de saisir un identifiant correct"
+            },
+          });
         const username = this.state.username;
         if (!username) {
             this.setState(() => {
                 return {
-                    invalidCodeOrPasswordMessage: 'Merci de saisir un identifiant correct'
+                    invalidCodeOrPasswordMessage: messages.errornMessage
                 }
             })
         }
@@ -95,11 +109,17 @@ export default class Forget extends Component {
 
     enterInputPassword = (e) => {
         e.preventDefault();
+        const messages = defineMessages({
+            errornMessage: {
+              id: "Forget.verificationCodeCantBeEmpty",
+              defaultMessage: "Le code de vérification ne peut être vide"
+            },
+          });
         const code = this.state.code;
         if (!code) {
             this.setState(() => {
                 return {
-                    invalidCodeOrPasswordMessage: 'Le code de vérification ne peut être vide'
+                    invalidCodeOrPasswordMessage: messages.errornMessage
                 }
             });
             return;
@@ -157,7 +177,20 @@ export default class Forget extends Component {
             enableResend,
             enterReset,
             enterInputPassword } = this.state;
-
+        const messages = defineMessages({
+            loginMessage: {
+                id: "Forget.login",
+                defaultMessage: "Identifiant"
+            },
+            passwordMessage: {
+                id: "Forget.password",
+                defaultMessage: "Mot de passe",
+                },
+            verificationCodeMessage: {
+                id: "Forget.verificationCode",
+                defaultMessage: "Code de vérification",
+                },
+            });
         return (
             <CSSTransitionGroup
                 transitionName="sample-app"
@@ -173,7 +206,7 @@ export default class Forget extends Component {
                     <div className="login-fill-in">
                         <div
                             className="login-element">
-                            <img src={require('../Images/homeLogo.png')} />
+                            <img src={Constants.HOME_LOGO_PATH} />
                         </div>
                         <div>
                             { !enterReset && !enterInputPassword && (
@@ -182,7 +215,7 @@ export default class Forget extends Component {
                                     type="text" 
                                     icon="users" 
                                     iconPosition="left" 
-                                    placeholder="Identifiant" 
+                                    placeholder={messages.loginMessage}
                                     className="login-field"
                                     onChange = {(event) => this.setState({username:event.target.value, invalidCodeOrPasswordMessage: ''})} 
                                 />
@@ -195,7 +228,7 @@ export default class Forget extends Component {
                                     type="text" 
                                     icon="code" 
                                     iconPosition="left" 
-                                    placeholder="Code de vérification" 
+                                    placeholder={messages.verificationCodeMessage}
                                     className="login-field"
                                     onChange = {(event) => this.setState({code:event.target.value, invalidCodeOrPasswordMessage: '', invalidCodeMessage: ''})}
                                 />
@@ -208,7 +241,7 @@ export default class Forget extends Component {
                                     type="password" 
                                     icon="code" 
                                     iconPosition="left" 
-                                    placeholder="Mot de passe" 
+                                    placeholder={messages.passwordMessage}
                                     className="login-field"
                                     onChange = {(event) => this.setState({password:event.target.value, invalidPasswordMessage: '', invalidCodeOrPasswordMessage: ''})}
                                 />
@@ -216,7 +249,7 @@ export default class Forget extends Component {
                                     type="password" 
                                     icon="code" 
                                     iconPosition="left" 
-                                    placeholder="Mot de passe" 
+                                    placeholder={messages.passwordMessage}
                                     className="login-field"
                                     onChange={this.handlePasswordMatchChange} 
                                 />
@@ -230,30 +263,45 @@ export default class Forget extends Component {
                                 <Button primary fluid 
                                     onClick={this.enterInputPassword}
                                     style={{backgroundColor: 'green', marginTop: 5}}>
-                                    Réinitialiser le mot de passe
+                                    <FormattedMessage
+                                        id="Forget.reinitPassword"
+                                        defaultMessage="Réinitialiser le mot de passe"
+                                    />
                                 </Button> }
                             { enterInputPassword && 
                                 <Button primary fluid 
                                     onClick={this.handlePasswordReset}
                                     style={{backgroundColor: 'green', marginTop: 5}}>
-                                    Envoyer
+                                    <FormattedMessage
+                                        id="Forget.send"
+                                        defaultMessage="Envoyer"
+                                    />
                                 </Button> }
                             { enableSend && 
                                 <Button primary fluid 
                                     onClick={this.sendVerificationCode}
                                     style={{backgroundColor: 'green', marginTop: 5}}>
-                                    Envoyer le code de vérification
+                                    <FormattedMessage
+                                        id="Forget.sendVerificationCode"
+                                        defaultMessage="Envoyer le code de vérification"
+                                    />
                                 </Button> }
                             { !enableResend && !enableSend && 
                                 <Button fluid loading disabled
                                     style={{backgroundColor: 'green', marginTop: 5}}>
-                                    En attente d'envoi
+                                    <FormattedMessage
+                                        id="Forget.waitingConfirmation"
+                                        defaultMessage="En attente d'envoi"
+                                    />
                                 </Button> }
                             { enableResend && enterReset && 
                                 <Button primary fluid 
                                     style={{backgroundColor: 'green', marginTop: 5}}
                                     onClick={ this.sendVerificationCode }>
-                                    Envoyer à nouveau!
+                                    <FormattedMessage
+                                        id="Forget.sendAgain"
+                                        defaultMessage="Envoyer à nouveau!"
+                                    />
                                 </Button> }
                         </div>
                     </div>

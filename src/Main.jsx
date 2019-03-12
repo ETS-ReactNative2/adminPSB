@@ -12,10 +12,10 @@ import Header from './Components/Header'
 import './css/general.css';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {getProjects, getCategories, getWelcomeHelpUs, getMembersHelpUs, getCompaniesHelpUs} from './API/fetchApi';
+import {getProjects, getCategories, getWelcomeHelpUs, getMembersHelpUs, getCompaniesHelpUs, getLastUpdatedDate} from './API/fetchApi';
 import {signOut} from './API/authAPI';
 import {getEditorStateFromHtml} from './API/draftAPI';
-import {addCategory, addProject, editWelcomeEditorState, editCompaniesEditorState, editMembersEditorState} from './actions/index.js';
+import {addCategory, addProject, editWelcomeEditorState, editCompaniesEditorState, editMembersEditorState, updateLastUpdatedDate} from './actions/index.js';
 
 class Main extends Component {
 
@@ -27,6 +27,7 @@ class Main extends Component {
         this.fetchCategories();
         this.fetchProjects();
         this.fetchHelpUsContent();
+        this.fetchLastUpdateDate();
     }
 
     //Fetch all the projects from server and store them in redux
@@ -37,6 +38,19 @@ class Main extends Component {
             data.map((item) => {
                 this.props.addProject(item.ID, item.NAME, item.DESCRIPTION, item.START_DATE,item.COVER_IMG, item.CATEGORY, item.END_DATE, item.LOCATION);
             })
+        })
+        .catch ( err => console.log(err))
+    }
+
+    //Fetch the last updated date from server 
+    fetchLastUpdateDate = async () => {
+        getLastUpdatedDate()
+        .then(data => {
+            console.log(data);
+            const lastUpdatedDate = data[0].VALUE;
+            if(lastUpdatedDate){
+                this.props.updateLastUpdatedDate(lastUpdatedDate);
+            }
         })
         .catch ( err => console.log(err))
     }
@@ -103,7 +117,7 @@ class Main extends Component {
 
 //Redux
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({addCategory, addProject, editWelcomeEditorState, editCompaniesEditorState, editMembersEditorState}, dispatch);
+    return bindActionCreators({addCategory, addProject, editWelcomeEditorState, editCompaniesEditorState, editMembersEditorState, updateLastUpdatedDate}, dispatch);
 }
 
 export default connect(null,mapDispatchToProps)(Main);

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "Login.login",
+    "defaultMessage": "Identifiant"
+  },
+  {
+    "id": "Login.password",
+    "defaultMessage": "Mot de passe"
+  },
+  {
+    "id": "Login.forgottenPassword",
+    "defaultMessage": "Mot de passe oublié?"
+  },
+  {
+    "id": "Login.connect",
+    "defaultMessage": "Se connecter"
+  }
+]

@@ -19,6 +19,7 @@ import {signOut} from '../API/authAPI';
 import {cleanProjects, cleanCategories} from '../actions/index.js';
 import PropTypes from 'prop-types';
 import * as Constants from '../Globals/Constants'
+import {FormattedMessage} from 'react-intl';
 
 class Header extends Component {
     
@@ -44,20 +45,48 @@ class Header extends Component {
             <BrowserRouter>
                 <div>
                     <div className='nav-bar'>
-                        <Link className="menu-item" to="/main">Accueil</Link>
-                        <Link className="menu-item" to="/categories">Catégories</Link>
-                        <Link className="menu-item" to="/projects">Projets</Link>
-                        <Link className="menu-item" to="/helpus">Nous aider</Link>
+                        <Link className="menu-item" to="/main">
+                        <FormattedMessage
+                            id="Header.accueil"
+                            defaultMessage="Accueil"
+                        />
+                        </Link>
+                        <Link className="menu-item" to="/categories">
+                            <FormattedMessage
+                                id="Header.categories"
+                                defaultMessage="Catégories"
+                            />
+                        </Link>
+                        <Link className="menu-item" to="/projects">
+                            <FormattedMessage
+                                id="Header.projects"
+                                defaultMessage="Projets"
+                            />
+                        </Link>
+                        <Link className="menu-item" to="/helpus">
+                            <FormattedMessage
+                                id="Header.helpus"
+                                defaultMessage="Nous aider"
+                            />
+                        </Link>
                         <div 
                         className="menu-item" 
                         onClick={this.signOut}>
-                            Se déconnecter
+                            <FormattedMessage
+                                id="Header.logout"
+                                defaultMessage="Se déconnecter"
+                            />
                         </div>
                     </div>
                     <div className="welcome-content" >
                         <img src={Constants.HOME_LOGO_PATH} 
                         height="50" />
-                        <div className="welcome-title"> Interface admin pour PSB App</div>
+                        <div className="welcome-title"> 
+                            <FormattedMessage
+                                id="Header.title"
+                                defaultMessage="Interface admin pour PSB App"
+                            />
+                        </div>
                     </div>
                     <Switch>
                         <Route exact path="/main" component={Home} />

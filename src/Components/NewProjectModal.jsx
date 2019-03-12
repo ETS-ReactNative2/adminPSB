@@ -12,6 +12,7 @@ import {addProject} from '../actions/index.js';
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {hasNoDuplicateForColumnName} from '../API/generalApi';
 import {postFile, getSignedUrlToPostFile, postProject} from '../API/fetchApi';
+import {FormattedMessage, defineMessages} from 'react-intl';
 
 const PREFIX = 'https://s3-eu-west-2.amazonaws.com/psb-users/';
 
@@ -41,17 +42,27 @@ class NewProjectModal extends Component{
         event.preventDefault();
         const id= Date.now();
         const {startDate, coverImage, category, location, name} = this.state;
+        const messages = defineMessages({
+            successMessage: {
+              id: "Projects.projectAddedWithSuccess",
+              defaultMessage: "Projet ajouté.",
+            },
+            errorMessage: {
+                id: "Projects.errorWhileAddingProject",
+                defaultMessage: "Erreur lors de l'ajout.",
+              },
+          });
         if(this.hasNoDuplicate(name)){
             const description = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
             postProject(id,name, description, startDate, category, coverImage, location)
             .then(data => {
                 console.log(data);
                 this.props.addProject(id,name,description,startDate, coverImage, category, null, location);
-                this.props.displayNotification("success","Projet ajouté.");
+                this.props.displayNotification("success",messages.successMessage);
             })
             .catch((error) => {
                 console.log(error);
-                this.props.displayNotification("error","Erreur lors de l'ajout.");
+                this.props.displayNotification("error",messages.errorMessage);
             });
             this.props.onClose();
         }
@@ -61,8 +72,14 @@ class NewProjectModal extends Component{
     hasNoDuplicate = (projectName) => {
         let {projects} = this.props;
         const result = hasNoDuplicateForColumnName(projectName, projects);
+        const messages = defineMessages({
+            infoMessage: {
+              id: "Projects.duplicateProject",
+              defaultMessage: "Un projet avec ce nom existe déjà.",
+            },
+          });
         if(!result){
-            this.props.displayNotification("info","Un projet avec ce nom existe déjà.");
+            this.props.displayNotification("info",messages.infoMessage);
         }
         return result;
     }
@@ -97,6 +114,12 @@ class NewProjectModal extends Component{
     //Post a file to server side and update file name to project coverImage field
     handleFile= (event) => {
         const file = event.target.files[0];
+        const messages = defineMessages({
+            errorMessage: {
+              id: "Projects.errorWhileUpdatingPicture",
+              defaultMessage: "Erreur lors de l'ajout de la photo.",
+            },
+          });
         let currentComponent = this;
         getSignedUrlToPostFile(file)
         .then(function (result) {
@@ -112,7 +135,7 @@ class NewProjectModal extends Component{
             }
         })
         .catch(function (err) {
-            currentComponent.props.displayNotification("error","Erreur lors de l'ajout de la photo.");
+            currentComponent.props.displayNotification("error",messages.errorMessage);
             console.log(err);
         });
     }
@@ -138,7 +161,6 @@ class NewProjectModal extends Component{
     }
 
     render() {
-
         const editorStyle ={
             borderStyle: 'solid',
             borderRadius: '4px',
@@ -147,15 +169,16 @@ class NewProjectModal extends Component{
             width: '100%',
             minHeight: 200
         }
-
-        const {name, description, startDate, category, editorState, coverImage} = this.state;
+        const {name, description, startDate, category, editorState, coverImage, location} = this.state;
         const errors = this.validate(name, startDate, category, location);
         const isEnabled = !Object.keys(errors).some(x => errors[x]);
-
         return (
             <form onSubmit={this.handleSubmit}> 
                 <label>
-                    Nom 
+                    <FormattedMessage
+                        id="Projects.newName"
+                        defaultMessage="Nom"
+                    />
                     <span className='required'>*</span>
                 </label>
                 <input autoFocus 
@@ -167,7 +190,12 @@ class NewProjectModal extends Component{
                     onChange={this.handleChange}
                 />
                 <br />
-                <label>Catégorie</label>
+                <label>
+                    <FormattedMessage
+                        id="Projects.newCategory"
+                        defaultMessage="Catégorie"
+                    />
+                </label>
                 <select 
                     name="category" 
                     className={errors.category?"error":""} 
@@ -180,7 +208,11 @@ class NewProjectModal extends Component{
                         ))}
                 </select>
                 <br/>
-                <label>Image de présentation
+                <label>
+                    <FormattedMessage
+                        id="Projects.newPicture"
+                        defaultMessage="Image de présentation"
+                    />
                     <span className="required">*</span>
                 </label>
                 <input 
@@ -195,7 +227,11 @@ class NewProjectModal extends Component{
                     : null
                 }
                 <br />
-                <label>Date de lancement
+                <label>
+                    <FormattedMessage
+                        id="Projects.newStart"
+                        defaultMessage="Date de lancement"
+                    />
                     <span className="required">*</span>
                 </label>
                 <input 
@@ -203,10 +239,15 @@ class NewProjectModal extends Component{
                     style={{width: 150}} 
                     row="1" 
                     className={errors.startDate?"error":""} 
-                    type="date" value={startDate} 
+                    type="date" 
+                    value={startDate} 
                     onChange={this.handleChange} />
                 <br />
-                <label>Lieu
+                <label>
+                    <FormattedMessage
+                        id="Projects.newLocation"
+                        defaultMessage="Lieu"
+                    />
                     <span className="required">*</span>
                 </label>
                 <input 
@@ -235,7 +276,10 @@ class NewProjectModal extends Component{
                     />
                 </div>
                 <button className='saveData' disabled={!isEnabled}>
-                    Créer
+                    <FormattedMessage
+                        id="Projects.create"
+                        defaultMessage="Créer"
+                    />
                 </button>
             </form>
         );

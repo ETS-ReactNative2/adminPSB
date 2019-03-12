@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {deleteProject} from '../actions/index.js';
 import * as Constants from '../Globals/Constants';
+import {FormattedMessage, defineMessages} from 'react-intl';
 
 class Projects extends Component{
 
@@ -43,15 +44,25 @@ class Projects extends Component{
 
     //Delete a project on server side
     deleteProject = (projectToDeleteId) => {
+        const messages = defineMessages({
+            successMessage: {
+              id: "Projects.projectDeletedWithSuccess",
+              defaultMessage: "Suppression réussie.",
+            },
+            errorMessage: {
+                id: "Projects.errorWhileDeletingProject",
+                defaultMessage: "Erreur lors de la suppression.",
+              },
+          });
         delProject(projectToDeleteId)
         .then(data => {
             console.log(data);
             this.props.deleteProject(projectToDeleteId);
-            this.props.displayNotification(true,"Suppression réussie.");
+            this.props.displayNotification(true,messages.successMessage);
         })
         .catch ( err => {
             console.log(err);
-            this.props.displayNotification(false,"Erreur lors de la suppression.");
+            this.props.displayNotification(false,messages.errorMessage);
         })
     }
 
@@ -80,6 +91,20 @@ class Projects extends Component{
     render() {
         const { column, direction, selectedProjectId} = this.state;
         const {projects} = this.props;
+        const messages = defineMessages({
+            projectDescriptionMessage: {
+              id: "Projects.projectDescription",
+              defaultMessage: "Description du projet"
+            },
+            deleteProjectMessage: {
+                id: "Projects.deleteProjectConfirmation",
+                defaultMessage: "Tu veux vraiment supprimer ce projet ?",
+              },
+              newProjectTitleMessage: {
+                id: "Projects.newProjectTitle",
+                defaultMessage: "Création d'un nouveau projet",
+              },
+          });
         return (
             <CSSTransitionGroup
                 transitionName="sample-app"
@@ -99,7 +124,7 @@ class Projects extends Component{
                         <Modal 
                             show={this.state.newProjectOpen}
                             onClose={this.toggleNewProjectModal}
-                            title={Constants.NEW_PROJECT_MODAL_TITLE}>
+                            title={<FormattedMessage id="Projects.newProjectTitle" defaultMessage="Création d'un nouveau projet" />}>
                             <NewProjectModal 
                                 onClose={this.toggleNewProjectModal}
                                 displayNotification={this.props.displayNotification}
@@ -108,7 +133,7 @@ class Projects extends Component{
                         <Modal 
                             show={this.state.existingProjectOpen}
                             onClose={this.toggleExistingProjectModal}
-                            title="Description du projet">
+                            title={<FormattedMessage id="Projects.projectDescription" defaultMessage="Description du projet" />}>
                             <ExistingProjectModal 
                                 selectedProjectId={selectedProjectId}
                                 displayNotification={this.props.displayNotification}
@@ -120,27 +145,42 @@ class Projects extends Component{
                                     <Table.HeaderCell
                                         sorted={column=="name"? direction:null}
                                         onClick={this.handleSort('name')}>
-                                        Nom
+                                        <FormattedMessage
+                                            id="Projects.name"
+                                            defaultMessage="Nom"
+                                        />
                                     </Table.HeaderCell>
                                     <Table.HeaderCell
                                         sorted={column=="category"? direction:null}
                                         onClick={this.handleSort('category')}>
-                                        Categorie
+                                        <FormattedMessage
+                                            id="Projects.category"
+                                            defaultMessage="Categorie"
+                                        />
                                     </Table.HeaderCell>
                                     <Table.HeaderCell
                                         sorted={column=="startDate"? direction:null}
                                         onClick={this.handleSort('startDate')}>
-                                        Debut
+                                        <FormattedMessage
+                                            id="Projects.start"
+                                            defaultMessage="Début"
+                                        />
                                     </Table.HeaderCell>
                                     <Table.HeaderCell
                                         sorted={column=="endDate"? direction:null}
                                         onClick={this.handleSort('endDate')}>
-                                        Fin
+                                        <FormattedMessage
+                                            id="Projects.end"
+                                            defaultMessage="Fin"
+                                        />
                                     </Table.HeaderCell>
                                     <Table.HeaderCell
                                         sorted={column=="location"? direction:null}
                                         onClick={this.handleSort('location')}>
-                                        Lieu
+                                        <FormattedMessage
+                                            id="Projects.location"
+                                            defaultMessage="Lieu"
+                                        />
                                     </Table.HeaderCell>
                                     <Table.HeaderCell></Table.HeaderCell>
                                 </Table.Row>
@@ -161,7 +201,7 @@ class Projects extends Component{
                                         <Table.Cell textAlign='center'>
                                             <img src={Constants.CLOSE_ICON_PATH} 
                                             className="linked-img"
-                                            onClick={() => {if(window.confirm("Tu veux vraiment supprimer ce projet ?")) this.deleteProject(project.id)}}
+                                            onClick={() => {if(window.confirm(messages.deleteProjectMessage)) this.deleteProject(project.id)}}
                                             width="16" 
                                             height="16" />
                                         </Table.Cell>

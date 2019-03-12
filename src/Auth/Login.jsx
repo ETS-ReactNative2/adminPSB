@@ -13,7 +13,10 @@ import { Button, Input, Form, Label, Modal, Image } from 'semantic-ui-react';
 import { BrowserRouter, Route, Link, Switch, Redirect } from 'react-router-dom';
 import '../css/general.css';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import {Auth} from 'aws-amplify';
+import {signIn} from '../API/authAPI';
+import {FormattedMessage, defineMessages} from 'react-intl';
+import * as Constants from '../Globals/Constants';
+
 export default class Login extends Component {
     state = {
         username: '',
@@ -30,17 +33,17 @@ export default class Login extends Component {
             this.username = this.state.username,
             this.password = this.state.password
         });
-       Auth.signIn(this.state.username, this.state.password)
-            .then(data => {
-                this.setState(() => ({cognitoUser: data}))
-                sessionStorage.setItem('isLoggedIn',true),
-                this.setState(() => {
-                    return {
-                        logInStatus: true
-                    }
-                })
+        signIn(this.state.username, this.state.password)
+        .then(data => {
+            this.setState(() => ({cognitoUser: data}))
+            sessionStorage.setItem('isLoggedIn',true),
+            this.setState(() => {
+                return {
+                    logInStatus: true
+                }
             })
-            .catch(err => console.log(err)); 
+        })
+        .catch(err => console.log(err)); 
     }
 
     handleKeyPress(event) {
@@ -51,6 +54,16 @@ export default class Login extends Component {
 
     render() {
         const { username, password, logInStatus, invalidCredentialsMessage } = this.state;
+        const messages = defineMessages({
+            loginMessage: {
+              id: "Login.login",
+              defaultMessage: "Identifiant"
+            },
+            passwordMessage: {
+                id: "Login.password",
+                defaultMessage: "Mot de passe",
+              },
+          });
         return (
             <CSSTransitionGroup
                 transitionName="sample-app"
@@ -66,7 +79,7 @@ export default class Login extends Component {
                         <div className="login-fill-in" >
                             <div
                                 className="login-element">
-                                <img src={require('../Images/homeLogo.png')} />
+                                <img src={Constants.HOME_LOGO_PATH} />
                             </div>
                             <div>
                                 <Row>
@@ -75,7 +88,7 @@ export default class Login extends Component {
                                             type="text" 
                                             icon="user" 
                                             iconPosition="left" 
-                                            placeholder="Identifiant" 
+                                            placeholder={messages.loginMessage}
                                             className="login-field"
                                             onChange = {(event) => this.setState({username:event.target.value, invalidCredentialsMessage: ''})} />
                                     </Form.Field>
@@ -86,7 +99,7 @@ export default class Login extends Component {
                                             type="password" 
                                             icon="hashtag" 
                                             iconPosition='left'  
-                                            placeholder="Mot de passe" 
+                                            placeholder={messages.passwordtMessage}
                                             className="login-field"
                                             onKeyPress= {(event) => this.handleKeyPress(event)}
                                             onChange = {(event) => this.setState({password:event.target.value, invalidCredentialsMessage: ''})}/>
@@ -101,13 +114,19 @@ export default class Login extends Component {
                                 className="login-link"
                                 to="/forget"
                                 >
-                                    Mot de passe oublié?
+                                    <FormattedMessage
+                                        id="Login.forgottenPassword"
+                                        defaultMessage="Mot de passe oublié?"
+                                    />
                                 </Link>
                                 <Button primary fluid 
                                     style={{backgroundColor: 'green', marginTop: 5}}
                                     onClick={this.signInCustomer}
                                 >
-                                    Se connecter
+                                    <FormattedMessage
+                                        id="Login.connect"
+                                        defaultMessage="Se connecter"
+                                    />
                                 </Button>
                             </div>
                         </div>

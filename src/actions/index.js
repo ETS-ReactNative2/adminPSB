@@ -61,3 +61,8 @@ export const editMembersEditorState = (membersEditorState) => ({
     type: 'EDIT_MEMBERS_EDITOR_STATE',
     membersEditorState
 })
+
+export const updateLastUpdatedDate = (lastUpdatedDate) => ({
+    type: 'UPDATE_LAST_UPDATED_DATE',
+    lastUpdatedDate
+})

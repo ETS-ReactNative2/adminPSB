@@ -11,6 +11,8 @@ import {editProject} from '../actions/index.js';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {putProject, postLastUpdatedDate} from '../API/fetchApi';
+import {defineMessages} from 'react-intl';
+import * as Constants from '../Globals/Constants';
 
 class ExistingProjectModal extends Component {
 
@@ -66,6 +68,16 @@ class ExistingProjectModal extends Component {
     //Post project details changes to server
     handleSubmit = (event) => {
         event.preventDefault();
+        const messages = defineMessages({
+            successMessage: {
+              id: "Projects.projectUpdatedWithSuccess",
+              defaultMessage: "Projet mis à jour.",
+            },
+            errorMessage: {
+                id: "Projects.errorWhileUpdatingProject",
+                defaultMessage: "Erreur lors de la mise à jour.",
+              },
+          });
         const id = this.props.selectedProjectId;
         const description = draftToHtml(convertToRaw(this.state.editorState.getCurrentContent()));
         const {name, startDate, endDate, coverImage, category, location} = this.state;
@@ -73,12 +85,12 @@ class ExistingProjectModal extends Component {
         .then(data => {
             console.log(data);
             this.props.editProject(id,name,description,startDate, coverImage, category, endDate, location);
-            this.props.displayNotification(true,"Projet mis à jour.");
+            this.props.displayNotification("success",messages.successMessage);
             updateLastUpdatedDate();
         })
         .catch((error) => {
             console.log(error);
-            this.props.displayNotification(false,"Erreur lors de la mise à jour.");
+            this.props.displayNotification("error",messages.errorMessage);
         });
         this.switchEditMode();
     };
@@ -114,7 +126,7 @@ class ExistingProjectModal extends Component {
                 <div className="row-content">                    
                     <div className="row-content">
                         { !this.state.editMode &&
-                            <img src={require('../Images/editIcon.png')} 
+                            <img src={Constants.EDIT_ICON_PATH} 
                                 onClick={() => {this.switchEditMode();}}
                                 className="icon-style"
                                 width="20" 

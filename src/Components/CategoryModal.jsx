@@ -7,7 +7,8 @@ import {addCategory} from '../actions/index.js';
 import './../css/api.css';
 import {postCategory} from '../API/fetchApi';
 import {hasNoDuplicateForColumnName} from '../API/generalApi';
-
+import {FormattedMessage, defineMessages} from 'react-intl';
+import * as Constants from '../Globals/Constants';
 
 class CategoryModal extends React.Component {
 
@@ -31,17 +32,26 @@ class CategoryModal extends React.Component {
       handleSubmit = (event) => {
         event.preventDefault();
         const categoryName = this.state.name;
-        
+        const messages = defineMessages({
+            successMessage: {
+              id: "Categories.categoryAddedWithSuccess",
+              defaultMessage: "Catégorie ajoutée.",
+            },
+            errorMessage: {
+                id: "Categories.errorWhileAddingCategory",
+                defaultMessage: "Erreur lors de l'ajout.",
+              },
+          });
         if(this.hasNoDuplicate(categoryName)){
             postCategory(categoryName)
             .then(data => {
                 console.log(data);
                 this.props.addCategory(categoryName);
-                this.props.displayNotification("success","Catégorie ajoutée.");
+                this.props.displayNotification("success",messages.successMessage);
             })
             .catch((error) => {
                 console.log(error);
-                this.props.displayNotification("error","Erreur lors de l'ajout.");
+                this.props.displayNotification("error",messages.errorMessage);
             });
             this.props.onClose();
         }
@@ -50,9 +60,15 @@ class CategoryModal extends React.Component {
     //Check if there is a category with the name chosen by the user already exist
     hasNoDuplicate = (categoryName) => {
         const {categories} = this.props;
+        const messages = defineMessages({
+            infoMessage: {
+              id: "Categories.duplicateCategory",
+              defaultMessage: "Cette catégorie existe déjà.",
+            },
+          });
         const result = hasNoDuplicateForColumnName(categoryName, categories);
         if(!result){
-            this.props.displayNotification("info","Cette catégorie existe déjà.");
+            this.props.displayNotification("info",messages.infoMessage);
         }
         return result;
     }
@@ -71,7 +87,7 @@ class CategoryModal extends React.Component {
         <div className="backdrop-content">
             <div className="modal-content">
                 <div>
-                    <img src={require('../Images/closeIcon2.png')} 
+                    <img src={Constants.CLOSE_ICON2_PATH} 
                         onClick={() => {this.props.onClose();}}
                         className="icon-style"
                         width="16" 
@@ -80,7 +96,11 @@ class CategoryModal extends React.Component {
                 </div>
                 <div 
                     className ="modal-title">
-                    Création d'une nouvelle catégorie 
+                    
+                    <FormattedMessage
+                        id="Categories.newCategoryCreation"
+                        defaultMessage="Création d'une nouvelle catégorie "
+                    />
                 </div>
                 <form onSubmit={this.handleSubmit}> 
                     <label> 

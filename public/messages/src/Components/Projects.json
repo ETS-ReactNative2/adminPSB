@@ -1,0 +1,42 @@
+[
+  {
+    "id": "Projects.projectDeletedWithSuccess",
+    "defaultMessage": "Suppression réussie."
+  },
+  {
+    "id": "Projects.errorWhileDeletingProject",
+    "defaultMessage": "Erreur lors de la suppression."
+  },
+  {
+    "id": "Projects.projectDescription",
+    "defaultMessage": "Description du projet"
+  },
+  {
+    "id": "Projects.deleteProjectConfirmation",
+    "defaultMessage": "Tu veux vraiment supprimer ce projet ?"
+  },
+  {
+    "id": "Projects.newProjectTitle",
+    "defaultMessage": "Création d'un nouveau projet"
+  },
+  {
+    "id": "Projects.name",
+    "defaultMessage": "Nom"
+  },
+  {
+    "id": "Projects.category",
+    "defaultMessage": "Categorie"
+  },
+  {
+    "id": "Projects.start",
+    "defaultMessage": "Début"
+  },
+  {
+    "id": "Projects.end",
+    "defaultMessage": "Fin"
+  },
+  {
+    "id": "Projects.location",
+    "defaultMessage": "Lieu"
+  }
+]
